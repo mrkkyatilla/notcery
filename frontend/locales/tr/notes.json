@@ -1,0 +1,43 @@
+{
+  "list": {
+    "search": "Notlarda ara…",
+    "allSubjects": "Tüm dersler",
+    "newNote": "Yeni not",
+    "empty": "Henüz not yok",
+    "untitled": "Başlıksız not",
+    "indexed": "İndeksli"
+  },
+  "saveStatus": {
+    "saving": "Kaydediliyor…",
+    "saved": "Kaydedildi",
+    "error": "Kayıt hatası",
+    "idle": ""
+  },
+  "editor": {
+    "title": "Başlık",
+    "titlePlaceholder": "Not başlığı",
+    "placeholder": "Yazmaya başlayın…"
+  },
+  "toolbar": {
+    "bold": "Kalın",
+    "italic": "İtalik",
+    "bulletList": "Liste",
+    "code": "Kod bloğu"
+  },
+  "empty": {
+    "selectOrCreate": "Soldan bir not seçin veya yeni not oluşturun."
+  },
+  "mobile": {
+    "list": "Liste",
+    "editor": "Editör",
+    "chat": "Sohbet"
+  },
+  "chat": {
+    "title": "Asistan",
+    "session": "Oturum {{id}}…",
+    "comingSoon": "Canlı RAG sohbeti Faz 5 ile gelecek. Oturum hazır.",
+    "mockReply": "Örnek yanıt: bu panel şimdilik salt okunur.",
+    "inputPlaceholder": "Mesajınız…",
+    "send": "Gönder"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "hero": {
+    "title": "Sınav hazırlığınızı tek yerde planlayın",
+    "subtitle": "Ders programı, notlar, kütüphane ve RAG destekli AI asistan — hepsi bir arada."
+  },
+  "cta": {
+    "register": "Ücretsiz başla",
+    "login": "Giriş yap"
+  },
+  "features": {
+    "planner": {
+      "title": "Akıllı planlayıcı",
+      "body": "Hedeflerinize göre haftalık çalışma planı üretin ve takvime aktarın."
+    },
+    "notes": {
+      "title": "Zengin notlar",
+      "body": "Markdown, bağlantılar ve ders bazlı organizasyon."
+    },
+    "ai": {
+      "title": "Kaynaklı AI",
+      "body": "Kendi materyallerinize dayalı yanıtlar ve atıflar."
+    }
+  },
+  "waitlist": {
+    "title": "Erken erişim listesi",
+    "subtitle": "Kapalı beta döneminde davet için e-postanızı bırakın.",
+    "email": "E-posta",
+    "emailPlaceholder": "ornek@eposta.com",
+    "submit": "Listeye katıl",
+    "submitting": "Gönderiliyor…",
+    "success": "Listeye eklendiniz — teşekkürler!",
+    "duplicate": "Bu e-posta zaten kayıtlı.",
+    "error": "Kayıt başarısız. Lütfen tekrar deneyin."
+  },
+  "footer": {
+    "status": "Durum sayfası",
+    "legal": "© Notcery"
+  },
+  "closedBeta": {
+    "title": "Kayıt şu an kapalı",
+    "subtitle": "Kapalı beta sürecindeyiz. Davet için bekleme listesine katılın."
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "UNKNOWN": {
+    "message": "An unexpected error occurred"
+  },
+  "VALIDATION_ERROR": {
+    "message": "Please check your input"
+  },
+  "UNAUTHORIZED": {
+    "message": "Your session expired. Please sign in again"
+  },
+  "FORBIDDEN": {
+    "message": "You don't have permission for this action"
+  },
+  "NOT_FOUND": {
+    "message": "Resource not found"
+  },
+  "CONFLICT": {
+    "message": "A conflicting record already exists"
+  },
+  "RATE_LIMITED": {
+    "message": "Too many requests. Please wait a moment"
+  },
+  "ACCOUNT_EXISTS_LINK_REQUIRED": {
+    "message": "This email is already registered. Sign in first to link Google"
+  },
+  "GOOGLE_TOKEN_INVALID": {
+    "message": "Google sign-in failed. Please try again"
+  },
+  "PLAN_GENERATION_FAILED": {
+    "message": "Could not generate plan"
+  },
+  "QUOTA_EXCEEDED": {
+    "message": "Quota limit reached",
+    "storage": "Storage quota exceeded ({{used_mb}} / {{limit_mb}} MB). Upgrade or delete files.",
+    "plan": "Weekly AI plan quota reached ({{used}} / {{limit}}). Upgrade to Pro.",
+    "chat": "Daily chat quota reached ({{used}} / {{limit}}). Upgrade to Pro."
+  }
+}

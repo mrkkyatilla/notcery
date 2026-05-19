@@ -1,0 +1,38 @@
+{
+  "UNKNOWN": {
+    "message": "Beklenmeyen bir hata oluştu"
+  },
+  "VALIDATION_ERROR": {
+    "message": "Girdiğiniz bilgileri kontrol edin"
+  },
+  "UNAUTHORIZED": {
+    "message": "Oturumunuz sona erdi. Lütfen tekrar giriş yapın"
+  },
+  "FORBIDDEN": {
+    "message": "Bu işlem için yetkiniz yok"
+  },
+  "NOT_FOUND": {
+    "message": "Kaynak bulunamadı"
+  },
+  "CONFLICT": {
+    "message": "Çakışan bir kayıt var"
+  },
+  "RATE_LIMITED": {
+    "message": "Çok fazla istek. Lütfen biraz bekleyin"
+  },
+  "ACCOUNT_EXISTS_LINK_REQUIRED": {
+    "message": "Bu e-posta zaten kayıtlı. Google bağlamak için önce giriş yapın"
+  },
+  "GOOGLE_TOKEN_INVALID": {
+    "message": "Google oturumu geçersiz. Tekrar deneyin"
+  },
+  "PLAN_GENERATION_FAILED": {
+    "message": "Plan oluşturulamadı"
+  },
+  "QUOTA_EXCEEDED": {
+    "message": "Kota limitine ulaştınız",
+    "storage": "Depolama kotası doldu ({{used_mb}} / {{limit_mb}} MB). Pro'ya geçin veya dosya silin.",
+    "plan": "Haftalık AI plan kotası doldu ({{used}} / {{limit}}). Pro'ya geçin.",
+    "chat": "Günlük chat kotası doldu ({{used}} / {{limit}}). Pro'ya geçin."
+  }
+}

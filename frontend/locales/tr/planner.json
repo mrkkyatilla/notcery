@@ -1,0 +1,71 @@
+{
+  "title": "Planlayıcı",
+  "subtitle": "Haftalık çalışma takviminiz",
+  "views": {
+    "week": "Hafta",
+    "day": "Gün"
+  },
+  "nav": {
+    "prev": "Önceki hafta",
+    "next": "Sonraki hafta",
+    "today": "Bugün"
+  },
+  "empty": {
+    "noWorkspace": "Takvimi görmek için bir çalışma alanı seçin.",
+    "noEvents": "Bu aralıkta etkinlik yok. Takvimde sürükleyerek yeni blok ekleyin."
+  },
+  "overlap": {
+    "title": "Çakışan etkinlikler (uyarı)"
+  },
+  "event": {
+    "title": "Başlık",
+    "subject": "Ders",
+    "noSubject": "Ders yok",
+    "start": "Başlangıç",
+    "end": "Bitiş",
+    "endAfterStart": "Bitiş başlangıçtan sonra olmalı",
+    "method": "Yöntem",
+    "status": "Durum",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "create": "Oluştur",
+    "delete": "Sil",
+    "detailTitle": "Etkinlik",
+    "createTitle": "Yeni etkinlik",
+    "createSubtitle": "Çalışma bloğu ekleyin"
+  },
+  "methods": {
+    "pomodoro": "Pomodoro",
+    "active_recall": "Aktif hatırlama",
+    "spaced_review": "Aralıklı tekrar",
+    "deep_reading": "Derin okuma",
+    "practice_exam": "Deneme sınavı",
+    "research": "Araştırma"
+  },
+  "status": {
+    "planned": "Planlandı",
+    "done": "Tamamlandı",
+    "skipped": "Atlandı"
+  },
+  "feedback": {
+    "easy": "Kolaydı",
+    "hard": "Zordu",
+    "saved": "Geri bildirim kaydedildi"
+  },
+  "ai": {
+    "generate": "AI plan",
+    "generating": "Üretiliyor…",
+    "overlay": "AI planınız hazırlanıyor…"
+  },
+  "plans": {
+    "title": "Plan versiyonları",
+    "saveWeek": "Bu haftayı kaydet",
+    "empty": "Henüz kayıtlı plan yok",
+    "saved": "Plan kaydedildi",
+    "activated": "Plan aktifleştirildi",
+    "activate": "Aktifleştir",
+    "badge": "aktif",
+    "active": "Aktif plan: {{id}}…",
+    "noActive": "Aktif plan yok"
+  }
+}

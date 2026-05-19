@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "Notcery",
+    "tagline": "Akıllı öğrenme ekosistemi"
+  },
+  "nav": {
+    "home": "Ana sayfa",
+    "login": "Giriş",
+    "register": "Kayıt",
+    "dashboard": "Panel",
+    "planner": "Planlayıcı",
+    "notes": "Notlar",
+    "library": "Kütüphane",
+    "settings": "Ayarlar"
+  },
+  "loading": "Yükleniyor…",
+  "actions": {
+    "toggleTheme": "Temayı değiştir",
+    "toggleLanguage": "Dili değiştir"
+  },
+  "pages": {
+    "home": {
+      "title": "Hoş geldiniz",
+      "description": "Frontend Faz 0 iskeleti çalışıyor. Kimlik ve workspace Faz 1'de gelir."
+    },
+    "login": {
+      "title": "Giriş",
+      "placeholder": "Giriş formu Faz 1'de eklenecek."
+    }
+  }
+}

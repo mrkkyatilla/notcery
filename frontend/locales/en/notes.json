@@ -1,0 +1,43 @@
+{
+  "list": {
+    "search": "Search notes…",
+    "allSubjects": "All subjects",
+    "newNote": "New note",
+    "empty": "No notes yet",
+    "untitled": "Untitled note",
+    "indexed": "Indexed"
+  },
+  "saveStatus": {
+    "saving": "Saving…",
+    "saved": "Saved",
+    "error": "Save failed",
+    "idle": ""
+  },
+  "editor": {
+    "title": "Title",
+    "titlePlaceholder": "Note title",
+    "placeholder": "Start writing…"
+  },
+  "toolbar": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "bulletList": "Bullet list",
+    "code": "Code block"
+  },
+  "empty": {
+    "selectOrCreate": "Select a note from the sidebar or create a new one."
+  },
+  "mobile": {
+    "list": "List",
+    "editor": "Editor",
+    "chat": "Chat"
+  },
+  "chat": {
+    "title": "Assistant",
+    "session": "Session {{id}}…",
+    "comingSoon": "Live RAG chat arrives in phase 5. Session is ready.",
+    "mockReply": "Sample reply: this panel is read-only for now.",
+    "inputPlaceholder": "Your message…",
+    "send": "Send"
+  }
+}

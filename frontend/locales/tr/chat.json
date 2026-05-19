@@ -1,0 +1,27 @@
+{
+  "title": "Asistan",
+  "session": "Oturum {{id}}…",
+  "empty": "Çalışma alanınız hakkında soru sorun; yanıtlar not ve belgelerinize dayanır.",
+  "inputPlaceholder": "Mesajınız…",
+  "send": "Gönder",
+  "sending": "Gönderiliyor…",
+  "thinking": "AI düşünüyor…",
+  "sources": "Kaynaklar",
+  "readMore": "Devamını oku",
+  "readLess": "Daha az göster",
+  "upgrade": "Pro'ya geç",
+  "quota": {
+    "chip": "{{used}}/{{limit}} mesaj",
+    "tooltip": "Bugünkü chat kotası"
+  },
+  "context": {
+    "useRag": "Not ve belgelerden yararlan (RAG)",
+    "useGrounding": "Web grounding",
+    "noteLinked": "Açık not bağlamda"
+  },
+  "citation": {
+    "document": "Belge",
+    "note": "Not",
+    "performance": "Performans"
+  }
+}

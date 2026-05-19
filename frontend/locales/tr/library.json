@@ -1,0 +1,48 @@
+{
+  "title": "Kütüphane",
+  "subtitle": "PDF, metin ve Markdown dosyalarını yükleyin; indeksleme durumunu izleyin.",
+  "status": {
+    "pending": "Bekliyor",
+    "processing": "İşleniyor",
+    "ready": "Hazır",
+    "failed": "Başarısız"
+  },
+  "upload": {
+    "choose": "Dosya seç",
+    "uploading": "Yükleniyor…",
+    "hint": "PDF, TXT veya MD — en fazla 50 MB",
+    "progress": "Yükleme",
+    "success": "Dosya yüklendi, indeksleme başladı",
+    "subject": "Ders (isteğe bağlı)",
+    "subjectNone": "Ders yok"
+  },
+  "validation": {
+    "size": "Dosya 50 MB sınırını aşıyor",
+    "extension": "Desteklenmeyen uzantı (yalnızca .pdf, .txt, .md)",
+    "mime_mismatch": "Dosya türü uzantıyla uyuşmuyor",
+    "unsupported": "Bu dosya türü desteklenmiyor"
+  },
+  "list": {
+    "empty": "Henüz dosya yok. İlk belgenizi yükleyin.",
+    "filename": "Dosya",
+    "size": "Boyut",
+    "status": "Durum",
+    "created": "Yükleme",
+    "delete": "Sil",
+    "indexFailed": "İndeksleme başarısız: {{message}}"
+  },
+  "quota": {
+    "label": "Depolama: {{used}} / {{limit}} MB",
+    "upgradeCta": "Kotayı artır"
+  },
+  "retrieve": {
+    "title": "Geliştirici: RAG retrieve",
+    "hint": "Yalnızca geliştirme ortamında görünür.",
+    "query": "Sorgu",
+    "queryPlaceholder": "Örn. integral kuralları",
+    "topK": "Sonuç sayısı",
+    "run": "Retrieve çalıştır",
+    "running": "Çalışıyor…",
+    "noResults": "Sonuç yok"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "nav": {
+    "title": "Settings",
+    "subtitle": "Profile, billing, and account",
+    "profile": "Profile",
+    "billing": "Billing",
+    "account": "Account"
+  },
+  "profile": {
+    "title": "Profile settings",
+    "subtitle": "Language, theme, and timezone",
+    "displayName": "Display name",
+    "locale": "Language",
+    "theme": "Theme",
+    "timezone": "Timezone",
+    "save": "Save",
+    "saved": "Settings saved"
+  },
+  "onboarding": {
+    "title": "Welcome",
+    "subtitle": "Let's get you started",
+    "stepTimezone": "Your timezone",
+    "stepWorkspace": "Workspace",
+    "workspaceName": "Workspace name",
+    "stepSubject": "First subject",
+    "subjectName": "Subject name",
+    "finish": "Get started",
+    "next": "Continue"
+  },
+  "workspace": {
+    "label": "Workspace",
+    "create": "New workspace",
+    "empty": "No workspaces yet"
+  },
+  "account": {
+    "exportTitle": "Export your data",
+    "exportSubtitle": "Download a JSON export of your account data.",
+    "export": "Download data",
+    "exporting": "Downloading…",
+    "exportSuccess": "Export downloaded",
+    "deleteTitle": "Delete account",
+    "deleteSubtitle": "This cannot be undone. Type DELETE to confirm.",
+    "deleteConfirmLabel": "Confirmation",
+    "delete": "Permanently delete account",
+    "deleting": "Deleting…",
+    "deleteSuccess": "Your account was deleted",
+    "legalLinks": "Legal:",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  }
+}

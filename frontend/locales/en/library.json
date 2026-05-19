@@ -1,0 +1,48 @@
+{
+  "title": "Library",
+  "subtitle": "Upload PDF, text, and Markdown files and track indexing status.",
+  "status": {
+    "pending": "Pending",
+    "processing": "Processing",
+    "ready": "Ready",
+    "failed": "Failed"
+  },
+  "upload": {
+    "choose": "Choose file",
+    "uploading": "Uploading…",
+    "hint": "PDF, TXT, or MD — max 50 MB",
+    "progress": "Upload",
+    "success": "File uploaded; indexing started",
+    "subject": "Subject (optional)",
+    "subjectNone": "No subject"
+  },
+  "validation": {
+    "size": "File exceeds the 50 MB limit",
+    "extension": "Unsupported extension (only .pdf, .txt, .md)",
+    "mime_mismatch": "File type does not match the extension",
+    "unsupported": "This file type is not supported"
+  },
+  "list": {
+    "empty": "No files yet. Upload your first document.",
+    "filename": "File",
+    "size": "Size",
+    "status": "Status",
+    "created": "Uploaded",
+    "delete": "Delete",
+    "indexFailed": "Indexing failed: {{message}}"
+  },
+  "quota": {
+    "label": "Storage: {{used}} / {{limit}} MB",
+    "upgradeCta": "Upgrade storage"
+  },
+  "retrieve": {
+    "title": "Developer: RAG retrieve",
+    "hint": "Visible in development only.",
+    "query": "Query",
+    "queryPlaceholder": "e.g. integration rules",
+    "topK": "Top K",
+    "run": "Run retrieve",
+    "running": "Running…",
+    "noResults": "No results"
+  }
+}

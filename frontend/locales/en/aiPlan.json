@@ -1,0 +1,20 @@
+{
+  "title": "Generate AI plan",
+  "description": "Create study blocks for the selected week.",
+  "range": "{{start}} – {{end}}",
+  "maxHours": "Max hours per day (optional)",
+  "maxHoursPlaceholder": "e.g. 6",
+  "useRag": "Use notes & documents (RAG)",
+  "submit": "Generate plan",
+  "cancel": "Cancel",
+  "generating": "Generating plan…",
+  "success": "Plan added to calendar",
+  "failed": "Could not generate plan",
+  "retry": "Retry",
+  "upgrade": "Upgrade quota",
+  "quota": "This week {{used}} / {{limit}} AI plans",
+  "adjustments": {
+    "title": "Plan adjustments",
+    "dismiss": "Dismiss"
+  }
+}

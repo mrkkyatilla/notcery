@@ -1,0 +1,27 @@
+{
+  "title": "Assistant",
+  "session": "Session {{id}}…",
+  "empty": "Ask about your workspace; answers are grounded in your notes and documents.",
+  "inputPlaceholder": "Your message…",
+  "send": "Send",
+  "sending": "Sending…",
+  "thinking": "AI is thinking…",
+  "sources": "Sources",
+  "readMore": "Read more",
+  "readLess": "Show less",
+  "upgrade": "Upgrade to Pro",
+  "quota": {
+    "chip": "{{used}}/{{limit}} msgs",
+    "tooltip": "Today's chat quota"
+  },
+  "context": {
+    "useRag": "Use notes & documents (RAG)",
+    "useGrounding": "Web grounding",
+    "noteLinked": "Open note in context"
+  },
+  "citation": {
+    "document": "Document",
+    "note": "Note",
+    "performance": "Performance"
+  }
+}

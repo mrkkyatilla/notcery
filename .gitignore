@@ -1,0 +1,76 @@
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+/static_collected
+*.pot
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+*.cover
+.hypothesis/
+docs/
+notes/
+
+# Node / frontend
+node_modules/
+dist/
+build/
+.next/
+out/
+.cache/
+*.tsbuildinfo
+.npm
+.yarn/
+.pnp.*
+coverage/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+
+# Misc
+*.egg-info/
+.eggs/
+dist/
+downloads/
+eggs/
+*.egg

@@ -1,0 +1,43 @@
+{
+  "hero": {
+    "title": "Plan your exam prep in one place",
+    "subtitle": "Schedule, notes, library, and a RAG-powered AI assistant — together."
+  },
+  "cta": {
+    "register": "Start free",
+    "login": "Sign in"
+  },
+  "features": {
+    "planner": {
+      "title": "Smart planner",
+      "body": "Generate weekly study plans from your goals and push them to the calendar."
+    },
+    "notes": {
+      "title": "Rich notes",
+      "body": "Markdown, links, and subject-based organization."
+    },
+    "ai": {
+      "title": "Grounded AI",
+      "body": "Answers backed by your own materials with citations."
+    }
+  },
+  "waitlist": {
+    "title": "Early access waitlist",
+    "subtitle": "Join the list for an invite during closed beta.",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "submit": "Join waitlist",
+    "submitting": "Submitting…",
+    "success": "You're on the list — thank you!",
+    "duplicate": "This email is already registered.",
+    "error": "Could not join. Please try again."
+  },
+  "footer": {
+    "status": "Status page",
+    "legal": "© Notcery"
+  },
+  "closedBeta": {
+    "title": "Registration is closed",
+    "subtitle": "We're in closed beta. Join the waitlist for an invite."
+  }
+}

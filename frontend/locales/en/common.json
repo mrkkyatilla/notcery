@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "Notcery",
+    "tagline": "Smart learning ecosystem"
+  },
+  "nav": {
+    "home": "Home",
+    "login": "Sign in",
+    "register": "Sign up",
+    "dashboard": "Dashboard",
+    "planner": "Planner",
+    "notes": "Notes",
+    "library": "Library",
+    "settings": "Settings"
+  },
+  "loading": "Loading…",
+  "actions": {
+    "toggleTheme": "Toggle theme",
+    "toggleLanguage": "Toggle language"
+  },
+  "pages": {
+    "home": {
+      "title": "Welcome",
+      "description": "Frontend phase 0 scaffold is running. Auth and workspace arrive in phase 1."
+    },
+    "login": {
+      "title": "Sign in",
+      "placeholder": "Sign-in form will be added in phase 1."
+    }
+  }
+}

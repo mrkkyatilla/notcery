@@ -1,0 +1,33 @@
+{
+  "page": {
+    "title": "Subscription & usage",
+    "subtitle": "Your plan, usage meters, and upgrade options",
+    "proHint": "Pro removes weekly plan, daily chat, and storage limits."
+  },
+  "tier": {
+    "label": "Current plan",
+    "free": "Free",
+    "pro": "Pro"
+  },
+  "usage": {
+    "plan": "Weekly AI plans",
+    "chat": "Daily chat",
+    "storage": "Storage (MB)"
+  },
+  "actions": {
+    "upgrade": "Upgrade to Pro",
+    "manage": "Manage subscription"
+  },
+  "quota": {
+    "planChip": "Plan {{used}}/{{limit}}",
+    "chatChip": "Chat {{used}}/{{limit}}",
+    "planTooltip": "Weekly AI plan quota",
+    "chatTooltip": "Daily chat message quota"
+  },
+  "feedback": {
+    "up": "Thumbs up",
+    "down": "Thumbs down",
+    "saved": "Thanks for your feedback",
+    "failed": "Could not send feedback"
+  }
+}

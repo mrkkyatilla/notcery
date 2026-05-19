@@ -1,0 +1,51 @@
+{
+  "nav": {
+    "title": "Ayarlar",
+    "subtitle": "Profil, abonelik ve hesap",
+    "profile": "Profil",
+    "billing": "Abonelik",
+    "account": "Hesap"
+  },
+  "profile": {
+    "title": "Profil ayarları",
+    "subtitle": "Dil, tema ve zaman dilimi",
+    "displayName": "Görünen ad",
+    "locale": "Dil",
+    "theme": "Tema",
+    "timezone": "Zaman dilimi",
+    "save": "Kaydet",
+    "saved": "Ayarlar kaydedildi"
+  },
+  "onboarding": {
+    "title": "Hoş geldiniz",
+    "subtitle": "Birkaç adımda başlayalım",
+    "stepTimezone": "Zaman diliminiz",
+    "stepWorkspace": "Çalışma alanı",
+    "workspaceName": "Alan adı",
+    "stepSubject": "İlk dersiniz",
+    "subjectName": "Ders adı",
+    "finish": "Başla",
+    "next": "Devam"
+  },
+  "workspace": {
+    "label": "Çalışma alanı",
+    "create": "Yeni alan",
+    "empty": "Henüz alan yok"
+  },
+  "account": {
+    "exportTitle": "Verilerinizi indirin",
+    "exportSubtitle": "Hesabınıza ait verileri JSON olarak dışa aktarın.",
+    "export": "Verileri indir",
+    "exporting": "İndiriliyor…",
+    "exportSuccess": "Dışa aktarma indirildi",
+    "deleteTitle": "Hesabı sil",
+    "deleteSubtitle": "Bu işlem geri alınamaz. Onay için DELETE yazın.",
+    "deleteConfirmLabel": "Onay",
+    "delete": "Hesabı kalıcı sil",
+    "deleting": "Siliniyor…",
+    "deleteSuccess": "Hesabınız silindi",
+    "legalLinks": "Yasal:",
+    "privacy": "Gizlilik",
+    "terms": "Kullanım şartları"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "title": "AI plan oluştur",
+  "description": "Seçili hafta için çalışma blokları üretin.",
+  "range": "{{start}} – {{end}}",
+  "maxHours": "Günlük maks. saat (isteğe bağlı)",
+  "maxHoursPlaceholder": "Örn. 6",
+  "useRag": "Not ve belgelerden yararlan (RAG)",
+  "submit": "Plan oluştur",
+  "cancel": "İptal",
+  "generating": "Plan üretiliyor…",
+  "success": "Plan takvime eklendi",
+  "failed": "Plan oluşturulamadı",
+  "retry": "Yeniden dene",
+  "upgrade": "Kotayı artır",
+  "quota": "Bu hafta {{used}} / {{limit}} AI plan",
+  "adjustments": {
+    "title": "Plan ayarlamaları",
+    "dismiss": "Kapat"
+  }
+}

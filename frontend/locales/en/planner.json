@@ -1,0 +1,71 @@
+{
+  "title": "Planner",
+  "subtitle": "Your weekly study calendar",
+  "views": {
+    "week": "Week",
+    "day": "Day"
+  },
+  "nav": {
+    "prev": "Previous week",
+    "next": "Next week",
+    "today": "Today"
+  },
+  "empty": {
+    "noWorkspace": "Select a workspace to view the calendar.",
+    "noEvents": "No events in this range. Drag on the calendar to add a block."
+  },
+  "overlap": {
+    "title": "Overlapping events (warning)"
+  },
+  "event": {
+    "title": "Title",
+    "subject": "Subject",
+    "noSubject": "No subject",
+    "start": "Start",
+    "end": "End",
+    "endAfterStart": "End must be after start",
+    "method": "Method",
+    "status": "Status",
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create",
+    "delete": "Delete",
+    "detailTitle": "Event",
+    "createTitle": "New event",
+    "createSubtitle": "Add a study block"
+  },
+  "methods": {
+    "pomodoro": "Pomodoro",
+    "active_recall": "Active recall",
+    "spaced_review": "Spaced review",
+    "deep_reading": "Deep reading",
+    "practice_exam": "Practice exam",
+    "research": "Research"
+  },
+  "status": {
+    "planned": "Planned",
+    "done": "Done",
+    "skipped": "Skipped"
+  },
+  "feedback": {
+    "easy": "Easy",
+    "hard": "Hard",
+    "saved": "Feedback saved"
+  },
+  "ai": {
+    "generate": "AI plan",
+    "generating": "Generating…",
+    "overlay": "Preparing your AI plan…"
+  },
+  "plans": {
+    "title": "Plan versions",
+    "saveWeek": "Save this week",
+    "empty": "No saved plans yet",
+    "saved": "Plan saved",
+    "activated": "Plan activated",
+    "activate": "Activate",
+    "badge": "active",
+    "active": "Active plan: {{id}}…",
+    "noActive": "No active plan"
+  }
+}

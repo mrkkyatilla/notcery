@@ -1,0 +1,33 @@
+{
+  "page": {
+    "title": "Abonelik ve kota",
+    "subtitle": "Planınız, kullanımınız ve yükseltme seçenekleri",
+    "proHint": "Pro ile haftalık plan, günlük sohbet ve depolama limitleri kalkar."
+  },
+  "tier": {
+    "label": "Mevcut plan",
+    "free": "Ücretsiz",
+    "pro": "Pro"
+  },
+  "usage": {
+    "plan": "Haftalık AI plan",
+    "chat": "Günlük sohbet",
+    "storage": "Depolama (MB)"
+  },
+  "actions": {
+    "upgrade": "Pro'ya yükselt",
+    "manage": "Aboneliği yönet"
+  },
+  "quota": {
+    "planChip": "Plan {{used}}/{{limit}}",
+    "chatChip": "Sohbet {{used}}/{{limit}}",
+    "planTooltip": "Haftalık AI plan kotası",
+    "chatTooltip": "Günlük sohbet kotası"
+  },
+  "feedback": {
+    "up": "Beğen",
+    "down": "Beğenme",
+    "saved": "Geri bildiriminiz alındı",
+    "failed": "Geri bildirim gönderilemedi"
+  }
+}
