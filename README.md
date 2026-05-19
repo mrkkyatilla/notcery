@@ -54,10 +54,7 @@ See [`frontend/README.md`](frontend/README.md) for scripts and phase notes.
 | `make shell` | Open `psql` in Postgres (until app container exists) |
 | `make logs` | Follow compose logs |
 
-## Production deploy
-
-Step-by-step guide for `https://note.wrupup.com` (HTTPS, empty VPS): [`notes/deploy/README.md`](notes/deploy/README.md).
-
+ 
 ## CI
 
 GitHub Actions runs backend (Ruff, pytest) and frontend (lint, typecheck, test, build) on push and pull requests.

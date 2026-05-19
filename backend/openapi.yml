@@ -1,0 +1,1948 @@
+openapi: 3.0.3
+info:
+  title: Notcery API
+  version: 1.0.0
+  description: |
+    Akıllı öğrenme ekosistemi REST API sözleşmesi.
+
+    **Kimlik:** E-posta/şifre ve Google ID Token (`POST /auth/google`).
+    **Tercihler:** `locale` (tr, en) ve `theme` (light, dark, system) kullanıcı profilinde.
+    **Lokalizasyon:** İstemci `Accept-Language` gönderir; hata mesajları bu dile göre dönebilir.
+
+    Kaynak doğruluk: bu dosya. Backend Faz 1+ implementasyonu buna uyar.
+  contact:
+    name: Notcery
+  license:
+    name: Proprietary
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local development
+  - url: https://api.notcery.app/api/v1
+    description: Production
+
+tags:
+  - name: System
+  - name: Auth
+  - name: Users
+  - name: Config
+  - name: Workspaces
+  - name: Subjects
+  - name: Planner
+  - name: Tasks
+  - name: Notes
+  - name: Documents
+  - name: Chat
+  - name: Billing
+  - name: Feedback
+
+paths:
+  /health:
+    get:
+      tags: [System]
+      summary: Sağlık kontrolü
+      operationId: healthCheck
+      security: []
+      responses:
+        '200':
+          description: Tüm bağımlılıklar sağlıklı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: En az bir bağımlılık hatalı (degraded)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+  /config/public:
+    get:
+      tags: [Config]
+      summary: Genel yapılandırma (auth gerekmez)
+      operationId: getPublicConfig
+      security: []
+      responses:
+        '200':
+          description: Desteklenen diller, temalar, OAuth client hint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicConfig'
+
+  /waitlist:
+    post:
+      tags: [Billing]
+      summary: Kapalı beta bekleme listesi
+      operationId: joinWaitlist
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+                locale:
+                  type: string
+      responses:
+        '201':
+          description: Kayıt alındı
+        '200':
+          description: E-posta zaten listede
+
+  /billing/me:
+    get:
+      tags: [Billing]
+      summary: Abonelik ve kota özeti
+      operationId: getBillingMe
+      responses:
+        '200':
+          description: Tier, limits, usage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingSummary'
+
+  /billing/checkout:
+    post:
+      tags: [Billing]
+      summary: Stripe Checkout oturumu (mock destekli)
+      operationId: createBillingCheckout
+      responses:
+        '201':
+          description: Checkout URL
+
+  /billing/portal:
+    post:
+      tags: [Billing]
+      summary: Stripe müşteri portalı
+      operationId: createBillingPortal
+      responses:
+        '200':
+          description: Portal URL
+
+  /config/features:
+    get:
+      tags: [Config]
+      summary: Feature flag listesi (auth)
+      operationId: getFeatureFlags
+      responses:
+        '200':
+          description: Flag anahtarları
+
+  /feedback/ai:
+    post:
+      tags: [Feedback]
+      summary: AI plan veya chat için thumbs up/down
+      operationId: submitAIFeedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIFeedbackCreate'
+      responses:
+        '201':
+          description: Kaydedildi
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: E-posta ile kayıt
+      operationId: register
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Kayıt başarılı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: E-posta zaten kayıtlı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: E-posta ile giriş
+      operationId: login
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Giriş başarılı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/google:
+    post:
+      tags: [Auth]
+      summary: Google ID Token ile giriş veya kayıt
+      description: |
+        React tarafında Google Identity Services ile alınan `id_token` gönderilir.
+        Backend token'ı Google ile doğrular; kullanıcıyı `sub` ile bulur veya oluşturur.
+      operationId: googleAuth
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleAuthRequest'
+      responses:
+        '200':
+          description: Mevcut Google hesabı — giriş
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '201':
+          description: Yeni kullanıcı oluşturuldu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Geçersiz veya süresi dolmuş Google token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Aynı e-posta farklı provider ile kayıtlı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              example:
+                error:
+                  code: ACCOUNT_EXISTS_LINK_REQUIRED
+                  message: Bu e-posta zaten kayıtlı. Hesabınıza Google bağlamak için giriş yapın.
+                  details:
+                    link_endpoint: /api/v1/auth/google/link
+
+  /auth/google/link:
+    post:
+      tags: [Auth]
+      summary: Oturum açıkken Google hesabını bağla
+      operationId: googleLink
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleAuthRequest'
+      responses:
+        '200':
+          description: Google hesabı bağlandı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Google hesabı başka kullanıcıya bağlı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Access token yenile
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Yeni token çifti
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenPair'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Refresh token iptal
+      operationId: logout
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '204':
+          description: Çıkış yapıldı
+
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Oturum açmış kullanıcı profili
+      operationId: getCurrentUser
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        '200':
+          description: Profil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    patch:
+      tags: [Users]
+      summary: Profil ve tercihleri güncelle (locale, theme, timezone, …)
+      operationId: updateCurrentUser
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: Güncellenmiş profil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [Users]
+      summary: Hesabı ve tüm verileri sil
+      operationId: deleteCurrentUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [confirm]
+              properties:
+                confirm:
+                  type: string
+                  enum: [DELETE]
+      responses:
+        '204':
+          description: Hesap silindi
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /users/me/export:
+    get:
+      tags: [Users]
+      summary: Kullanıcı verisi dışa aktarımı (JSON)
+      operationId: exportCurrentUserData
+      responses:
+        '200':
+          description: Kullanıcı ve workspace verilerinin JSON dökümü
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDataExport'
+
+  /workspaces:
+    get:
+      tags: [Workspaces]
+      summary: Workspace listesi
+      operationId: listWorkspaces
+      responses:
+        '200':
+          description: Liste
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [results]
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Workspace'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Workspaces]
+      summary: Workspace oluştur
+      operationId: createWorkspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceCreate'
+      responses:
+        '201':
+          description: Oluşturuldu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /workspaces/{workspace_id}/subjects:
+    get:
+      tags: [Subjects]
+      summary: Ders listesi
+      operationId: listSubjects
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      responses:
+        '200':
+          description: Dersler
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [results]
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subject'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Subjects]
+      summary: Ders ekle
+      operationId: createSubject
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubjectCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+
+  /workspaces/{workspace_id}/events:
+    get:
+      tags: [Planner]
+      summary: Takvim etkinlikleri (aralık)
+      operationId: listStudyEvents
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [results]
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StudyEvent'
+    post:
+      tags: [Planner]
+      summary: Manuel etkinlik oluştur
+      operationId: createStudyEvent
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudyEventCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyEventResponse'
+
+  /events/{event_id}:
+    patch:
+      tags: [Planner]
+      summary: Etkinlik güncelle (sürükle-bırak, durum)
+      operationId: updateStudyEvent
+      parameters:
+        - $ref: '#/components/parameters/EventId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudyEventUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyEventResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Planner]
+      summary: Etkinlik sil
+      operationId: deleteStudyEvent
+      parameters:
+        - $ref: '#/components/parameters/EventId'
+      responses:
+        '204':
+          description: Silindi
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /workspaces/{workspace_id}/plans/save:
+    post:
+      tags: [Planner]
+      summary: Mevcut haftayı plan olarak kaydet
+      operationId: savePlan
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanSaveRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanVersion'
+
+  /plans/versions/{version_id}:
+    get:
+      tags: [Planner]
+      summary: Plan versiyonu detayı (etkinliklerle)
+      operationId: getPlanVersion
+      parameters:
+        - $ref: '#/components/parameters/VersionId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanVersionDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /plans/versions/{version_id}/activate:
+    post:
+      tags: [Planner]
+      summary: Planı aktif yap
+      operationId: activatePlanVersion
+      parameters:
+        - $ref: '#/components/parameters/VersionId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanVersion'
+
+  /workspaces/{workspace_id}/plans/generate:
+    post:
+      tags: [Planner]
+      summary: AI plan üret (async)
+      operationId: generatePlan
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanGenerateRequest'
+      responses:
+        '202':
+          description: Görev kuyruğa alındı
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncTaskAccepted'
+
+  /tasks/{task_id}:
+    get:
+      tags: [Tasks]
+      summary: Async görev durumu
+      operationId: getTaskStatus
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncTask'
+
+  /tasks/{task_id}/retry:
+    post:
+      tags: [Tasks]
+      summary: Başarısız veya takılı plan görevini yeniden dene
+      operationId: retryTask
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncTask'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /workspaces/{workspace_id}/notes:
+    get:
+      tags: [Notes]
+      summary: Not listesi
+      operationId: listNotes
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+        - name: q
+          in: query
+          description: Tam metin arama (başlık + içerik)
+          schema:
+            type: string
+        - name: subject_id
+          in: query
+          description: Derse göre filtre
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NoteSummary'
+    post:
+      tags: [Notes]
+      summary: Not oluştur
+      operationId: createNote
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+
+  /notes/{note_id}:
+    get:
+      tags: [Notes]
+      operationId: getNote
+      parameters:
+        - $ref: '#/components/parameters/NoteId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+    patch:
+      tags: [Notes]
+      operationId: updateNote
+      parameters:
+        - $ref: '#/components/parameters/NoteId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+    delete:
+      tags: [Notes]
+      operationId: deleteNote
+      parameters:
+        - $ref: '#/components/parameters/NoteId'
+      responses:
+        '204':
+          description: Silindi
+
+  /workspaces/{workspace_id}/documents:
+    get:
+      tags: [Documents]
+      summary: Kütüphane dosya listesi
+      operationId: listDocuments
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Document'
+    post:
+      tags: [Documents]
+      summary: Yüklenen dosya metadata kaydı (index job tetikler)
+      operationId: createDocument
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '409':
+          description: Aynı file_key ile kayıt mevcut
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /workspaces/{workspace_id}/documents/upload-url:
+    post:
+      tags: [Documents]
+      summary: Presigned PUT URL (MinIO / S3)
+      operationId: createDocumentUploadUrl
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadUrlRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadUrlResponse'
+
+  /documents/{document_id}:
+    get:
+      tags: [Documents]
+      summary: Dosya durumu
+      operationId: getDocument
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Documents]
+      summary: Dosya ve chunk silme
+      operationId: deleteDocument
+      parameters:
+        - $ref: '#/components/parameters/DocumentId'
+      responses:
+        '204':
+          description: Silindi
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /workspaces/{workspace_id}/retrieve:
+    post:
+      tags: [Documents]
+      summary: Vektör retrieval (RAG)
+      operationId: retrieveChunks
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RetrieveRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveResponse'
+
+  /chat/sessions/{session_id}/messages:
+    get:
+      tags: [Chat]
+      summary: Mesaj geçmişi
+      operationId: listChatMessages
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatMessage'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Chat]
+      summary: Mesaj gönder (RAG destekli sync)
+      operationId: sendChatMessage
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageCreate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /workspaces/{workspace_id}/chat/sessions:
+    post:
+      tags: [Chat]
+      summary: Chat oturumu başlat
+      operationId: createChatSession
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSession'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Access token (Authorization header)
+
+  parameters:
+    AcceptLanguage:
+      name: Accept-Language
+      in: header
+      description: |
+        İstenen dil. `tr` veya `en` (BCP 47 kısaltılır).
+        Hata mesajları ve opsiyonel sunucu metinleri için.
+      schema:
+        $ref: '#/components/schemas/Locale'
+    WorkspaceId:
+      name: workspace_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    TaskId:
+      name: task_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    NoteId:
+      name: note_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    DocumentId:
+      name: document_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    EventId:
+      name: event_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    VersionId:
+      name: version_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Doğrulama hatası
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Unauthorized:
+      description: Kimlik doğrulama gerekli veya geçersiz token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    NotFound:
+      description: Kaynak bulunamadı
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+
+  schemas:
+    Locale:
+      type: string
+      enum: [tr, en]
+      description: Desteklenen arayüz dilleri (MVP)
+      example: tr
+
+    Theme:
+      type: string
+      enum: [light, dark, system]
+      description: |
+        light / dark — sabit tema.
+        system — işletim sistemi tercihini izle (frontend uygular).
+      example: system
+
+    AuthProvider:
+      type: string
+      enum: [email, google]
+
+    HealthStatus:
+      type: object
+      required: [status, checks]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        checks:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              status:
+                type: string
+                enum: [ok, error]
+              detail:
+                type: string
+
+    UserDataExport:
+      type: object
+      properties:
+        exported_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+        workspaces:
+          type: array
+          items:
+            type: object
+
+    PublicConfig:
+      type: object
+      required: [locales, themes, default_locale, default_theme, google_oauth]
+      properties:
+        locales:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocaleOption'
+        themes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThemeOption'
+        default_locale:
+          $ref: '#/components/schemas/Locale'
+        default_theme:
+          $ref: '#/components/schemas/Theme'
+        google_oauth:
+          type: object
+          required: [client_id, enabled]
+          properties:
+            enabled:
+              type: boolean
+            client_id:
+              type: string
+              description: Web client ID (public, frontend GIS için)
+        feature_flags:
+          type: object
+          additionalProperties:
+            type: boolean
+
+    BillingSummary:
+      type: object
+      properties:
+        tier:
+          type: string
+          enum: [free, pro]
+        status:
+          type: string
+        current_period_end:
+          type: string
+          format: date-time
+          nullable: true
+        limits:
+          type: object
+        usage:
+          type: object
+
+    AIFeedbackCreate:
+      type: object
+      required: [target_type, target_id, rating]
+      properties:
+        target_type:
+          type: string
+          enum: [plan_version, chat_message]
+        target_id:
+          type: string
+          format: uuid
+        rating:
+          type: string
+          enum: [up, down]
+        comment:
+          type: string
+
+    LocaleOption:
+      type: object
+      required: [code, label]
+      properties:
+        code:
+          $ref: '#/components/schemas/Locale'
+        label:
+          type: string
+          example: Türkçe
+
+    ThemeOption:
+      type: object
+      required: [code, label]
+      properties:
+        code:
+          $ref: '#/components/schemas/Theme'
+        label:
+          type: string
+          example: Sistem
+
+    UserPreferences:
+      type: object
+      properties:
+        locale:
+          $ref: '#/components/schemas/Locale'
+        theme:
+          $ref: '#/components/schemas/Theme'
+        timezone:
+          type: string
+          example: Europe/Istanbul
+        study_preferences:
+          type: object
+          additionalProperties: true
+          description: Pomodoro süresi, uyku saatleri vb.
+          properties:
+            pomodoro_minutes:
+              type: integer
+              minimum: 15
+              maximum: 60
+              default: 25
+
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - locale
+        - theme
+        - timezone
+        - auth_provider
+        - onboarding_completed
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        display_name:
+          type: string
+          nullable: true
+        avatar_url:
+          type: string
+          format: uri
+          nullable: true
+        locale:
+          $ref: '#/components/schemas/Locale'
+        theme:
+          $ref: '#/components/schemas/Theme'
+        timezone:
+          type: string
+        auth_provider:
+          $ref: '#/components/schemas/AuthProvider'
+        email_verified:
+          type: boolean
+          default: false
+        onboarding_completed:
+          type: boolean
+        study_preferences:
+          type: object
+          additionalProperties: true
+        social_accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialAccountSummary'
+          description: Bağlı harici hesaplar (şifre gösterilmez)
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    SocialAccountSummary:
+      type: object
+      required: [provider, linked_at]
+      properties:
+        provider:
+          type: string
+          enum: [google]
+        linked_at:
+          type: string
+          format: date-time
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        display_name:
+          type: string
+          maxLength: 120
+        locale:
+          $ref: '#/components/schemas/Locale'
+        theme:
+          $ref: '#/components/schemas/Theme'
+        timezone:
+          type: string
+        study_preferences:
+          type: object
+          additionalProperties: true
+        onboarding_completed:
+          type: boolean
+
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          format: password
+        display_name:
+          type: string
+        locale:
+          $ref: '#/components/schemas/Locale'
+        theme:
+          $ref: '#/components/schemas/Theme'
+        timezone:
+          type: string
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    GoogleAuthRequest:
+      type: object
+      required: [id_token]
+      properties:
+        id_token:
+          type: string
+          description: Google Identity Services credential JWT
+        locale:
+          $ref: '#/components/schemas/Locale'
+          description: İlk kayıtta varsayılan dil (yoksa Accept-Language)
+        theme:
+          $ref: '#/components/schemas/Theme'
+        timezone:
+          type: string
+          description: IANA timezone; yoksa UTC veya frontend tahmini
+
+    RefreshRequest:
+      type: object
+      required: [refresh]
+      properties:
+        refresh:
+          type: string
+          description: Refresh token
+
+    TokenPair:
+      type: object
+      required: [access, refresh, access_expires_in]
+      properties:
+        access:
+          type: string
+        refresh:
+          type: string
+        access_expires_in:
+          type: integer
+          description: Saniye cinsinden access token ömrü
+          example: 900
+
+    AuthResponse:
+      type: object
+      required: [user, tokens]
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        tokens:
+          $ref: '#/components/schemas/TokenPair'
+        is_new_user:
+          type: boolean
+          description: Google veya kayıt akışında yeni hesap oluşturuldu mu
+
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum:
+                - VALIDATION_ERROR
+                - UNAUTHORIZED
+                - FORBIDDEN
+                - NOT_FOUND
+                - CONFLICT
+                - RATE_LIMITED
+                - ACCOUNT_EXISTS_LINK_REQUIRED
+                - GOOGLE_TOKEN_INVALID
+                - PLAN_GENERATION_FAILED
+            message:
+              type: string
+              description: İnsan okunur; Accept-Language ile lokalize edilebilir
+            details:
+              type: object
+              additionalProperties: true
+
+    Workspace:
+      type: object
+      required: [id, name, owner_id, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        owner_id:
+          type: string
+          format: uuid
+        exam_date:
+          type: string
+          format: date
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    WorkspaceCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        exam_date:
+          type: string
+          format: date
+
+    Subject:
+      type: object
+      required: [id, workspace_id, name, difficulty, color]
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        difficulty:
+          type: integer
+          minimum: 1
+          maximum: 5
+        weekly_target_hours:
+          type: number
+          format: float
+          nullable: true
+        color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+
+    SubjectCreate:
+      type: object
+      required: [name, difficulty, color]
+      properties:
+        name:
+          type: string
+        difficulty:
+          type: integer
+          minimum: 1
+          maximum: 5
+        weekly_target_hours:
+          type: number
+        color:
+          type: string
+
+    StudyMethod:
+      type: string
+      enum:
+        - pomodoro
+        - active_recall
+        - spaced_review
+        - deep_reading
+        - practice_exam
+        - research
+
+    StudyEventStatus:
+      type: string
+      enum: [planned, done, skipped]
+
+    UserFeedback:
+      type: string
+      enum: [easy, hard]
+      nullable: true
+
+    StudyEvent:
+      type: object
+      required: [id, workspace_id, title, start_at, end_at, method, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        subject_id:
+          type: string
+          format: uuid
+          nullable: true
+        plan_version_id:
+          type: string
+          format: uuid
+          nullable: true
+        title:
+          type: string
+        start_at:
+          type: string
+          format: date-time
+        end_at:
+          type: string
+          format: date-time
+        method:
+          $ref: '#/components/schemas/StudyMethod'
+        status:
+          $ref: '#/components/schemas/StudyEventStatus'
+        user_feedback:
+          $ref: '#/components/schemas/UserFeedback'
+
+    StudyEventCreate:
+      type: object
+      required: [title, start_at, end_at, method]
+      properties:
+        subject_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        start_at:
+          type: string
+          format: date-time
+        end_at:
+          type: string
+          format: date-time
+        method:
+          $ref: '#/components/schemas/StudyMethod'
+        status:
+          $ref: '#/components/schemas/StudyEventStatus'
+
+    StudyEventUpdate:
+      type: object
+      properties:
+        subject_id:
+          type: string
+          format: uuid
+          nullable: true
+        title:
+          type: string
+        start_at:
+          type: string
+          format: date-time
+        end_at:
+          type: string
+          format: date-time
+        method:
+          $ref: '#/components/schemas/StudyMethod'
+        status:
+          $ref: '#/components/schemas/StudyEventStatus'
+        user_feedback:
+          $ref: '#/components/schemas/UserFeedback'
+
+    EventOverlapWarning:
+      type: object
+      properties:
+        code:
+          type: string
+          enum: [EVENT_OVERLAP]
+        message:
+          type: string
+        event_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+
+    StudyEventResponse:
+      allOf:
+        - $ref: '#/components/schemas/StudyEvent'
+        - type: object
+          properties:
+            warnings:
+              type: array
+              items:
+                $ref: '#/components/schemas/EventOverlapWarning'
+
+    PlanVersion:
+      type: object
+      required: [id, workspace_id, generated_by, is_active, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        generated_by:
+          type: string
+          enum: [ai, user]
+        is_active:
+          type: boolean
+        range_start:
+          type: string
+          format: date
+          nullable: true
+        range_end:
+          type: string
+          format: date
+          nullable: true
+        event_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PlanVersionDetail:
+      allOf:
+        - $ref: '#/components/schemas/PlanVersion'
+        - type: object
+          properties:
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/StudyEvent'
+
+    PlanSaveRequest:
+      type: object
+      required: [range_start, range_end]
+      properties:
+        range_start:
+          type: string
+          format: date
+        range_end:
+          type: string
+          format: date
+        link_events:
+          type: boolean
+          default: true
+
+    PlanGenerateRequest:
+      type: object
+      required: [range_start, range_end]
+      properties:
+        range_start:
+          type: string
+          format: date
+        range_end:
+          type: string
+          format: date
+        constraints:
+          type: object
+          properties:
+            max_hours_per_day:
+              type: number
+            blocked_slots:
+              type: array
+              items:
+                type: object
+                required: [start, end]
+                properties:
+                  start:
+                    type: string
+                    format: date-time
+                  end:
+                    type: string
+                    format: date-time
+        use_rag:
+          type: boolean
+          default: true
+
+    AsyncTaskAccepted:
+      type: object
+      required: [task_id, status, poll_url]
+      properties:
+        task_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending]
+        poll_url:
+          type: string
+          example: /api/v1/tasks/550e8400-e29b-41d4-a716-446655440000
+
+    AsyncTask:
+      type: object
+      required: [task_id, status]
+      properties:
+        task_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, success, failed]
+        result:
+          type: object
+          nullable: true
+          properties:
+            plan_version_id:
+              type: string
+              format: uuid
+        error:
+          $ref: '#/components/schemas/ErrorEnvelope'
+
+    NoteSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        subject_id:
+          type: string
+          format: uuid
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+
+    Note:
+      allOf:
+        - $ref: '#/components/schemas/NoteSummary'
+        - type: object
+          properties:
+            workspace_id:
+              type: string
+              format: uuid
+            content_json:
+              type: object
+              description: TipTap document JSON
+            indexed_at:
+              type: string
+              format: date-time
+              nullable: true
+
+    NoteCreate:
+      type: object
+      properties:
+        title:
+          type: string
+        subject_id:
+          type: string
+          format: uuid
+
+    NoteUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        content_json:
+          type: object
+        subject_id:
+          type: string
+          format: uuid
+
+    UploadUrlRequest:
+      type: object
+      required: [filename, mime_type, size_bytes]
+      properties:
+        filename:
+          type: string
+        mime_type:
+          type: string
+          enum: [application/pdf, text/plain, text/markdown]
+        size_bytes:
+          type: integer
+          minimum: 1
+          maximum: 52428800
+
+    UploadUrlResponse:
+      type: object
+      properties:
+        upload_url:
+          type: string
+          format: uri
+        file_key:
+          type: string
+        expires_in:
+          type: integer
+
+    DocumentCreate:
+      type: object
+      required: [file_key, original_filename, mime_type, size_bytes]
+      properties:
+        file_key:
+          type: string
+        original_filename:
+          type: string
+        mime_type:
+          type: string
+          enum: [application/pdf, text/plain, text/markdown]
+        size_bytes:
+          type: integer
+        subject_id:
+          type: string
+          format: uuid
+          nullable: true
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        subject_id:
+          type: string
+          format: uuid
+          nullable: true
+        original_filename:
+          type: string
+        mime_type:
+          type: string
+        size_bytes:
+          type: integer
+        status:
+          type: string
+          enum: [pending, processing, ready, failed]
+        error_message:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    RetrieveRequest:
+      type: object
+      required: [query]
+      properties:
+        query:
+          type: string
+        top_k:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 8
+        subject_id:
+          type: string
+          format: uuid
+          nullable: true
+        source_types:
+          type: array
+          items:
+            type: string
+            enum: [document, note, performance]
+
+    RetrievedChunk:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        text:
+          type: string
+        score:
+          type: number
+          format: float
+        source_type:
+          type: string
+          enum: [document, note, performance]
+        document_id:
+          type: string
+          format: uuid
+          nullable: true
+        note_id:
+          type: string
+          format: uuid
+          nullable: true
+        metadata:
+          type: object
+        excerpt:
+          type: string
+
+    RetrieveResponse:
+      type: object
+      properties:
+        query:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RetrievedChunk'
+
+    ChatSession:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+
+    ChatMessageContext:
+      type: object
+      properties:
+        note_id:
+          type: string
+          format: uuid
+          nullable: true
+        subject_id:
+          type: string
+          format: uuid
+          nullable: true
+        use_rag:
+          type: boolean
+          default: true
+        use_grounding:
+          type: boolean
+          default: false
+
+    ChatMessageCreate:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+        context:
+          $ref: '#/components/schemas/ChatMessageContext'
+
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        citations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatCitation'
+        created_at:
+          type: string
+          format: date-time
+
+    ChatCitation:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [chunk]
+        chunk_id:
+          type: string
+          format: uuid
+        source_type:
+          type: string
+        document_id:
+          type: string
+          format: uuid
+          nullable: true
+        note_id:
+          type: string
+          format: uuid
+          nullable: true
+        excerpt:
+          type: string
+
+    ChatMessageResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            role:
+              type: string
+              enum: [assistant]
+            content:
+              type: string
+        citations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatCitation'
+
+security:
+  - bearerAuth: []

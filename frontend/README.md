@@ -1,6 +1,6 @@
 # Notcery Frontend
 
-React 19 + Vite + TypeScript client. API contract: [`../docs/openapi.yml`](../docs/openapi.yml).
+React 19 + Vite + TypeScript client. API contract: [`../backend/openapi.yml`](../backend/openapi.yml).
 
 ## Setup
 
@@ -40,11 +40,10 @@ Set `VITE_ENABLE_MSW=true` in `.env` to mock `/health` and `/config/public` with
 - **F3**: TipTap notes, split view, chat skeleton
 - **F4**: document library, upload, indexing status
 - **F5**: AI plan generation, RAG chat, citations
-- **F6**: tests, E2E, code split, Sentry — [`../docs/frontend-fazlar/faz-6-kalite.md`](../docs/frontend-fazlar/faz-6-kalite.md)
-- **F7**: billing, landing, waitlist, feedback — [`../docs/frontend-fazlar/faz-7-saas-ui.md`](../docs/frontend-fazlar/faz-7-saas-ui.md)
+- **F6**: tests, E2E, code split, Sentry 
+- **F7**: billing, landing, waitlist,  
 
-Durum özeti: [`../docs/frontend-fazlar/DURUM.md`](../docs/frontend-fazlar/DURUM.md) · Prod deploy: [`../notes/deploy/README.md`](../notes/deploy/README.md)
-
+ 
 ## Routes (F1)
 
 | Path | Description |
