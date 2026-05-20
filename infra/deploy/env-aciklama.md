@@ -99,7 +99,8 @@ Google Console’da `https://note.wrupup.com` origin/redirect ekli olmalı.
 GEMINI_API_KEY=<Google AI Studio API key>
 AI_BACKEND=auto
 INDEXER_EMBEDDING_BACKEND=auto
-GEMINI_CHAT_MODEL=models/gemini-2.0-flash
+GEMINI_CHAT_MODEL=models/gemini-2.5-flash
+GEMINI_PLAN_MODEL=models/gemini-2.5-flash
 GEMINI_EMBEDDING_MODEL=models/text-embedding-004
 ```
 

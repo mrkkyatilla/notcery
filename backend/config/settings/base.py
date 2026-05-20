@@ -174,8 +174,8 @@ GEMINI_EMBEDDING_MODEL = os.environ.get("GEMINI_EMBEDDING_MODEL", "models/text-e
 
 # AI orchestration (Faz 5)
 AI_BACKEND = os.environ.get("AI_BACKEND", "auto")
-GEMINI_PLAN_MODEL = os.environ.get("GEMINI_PLAN_MODEL", "models/gemini-2.0-flash")
-GEMINI_CHAT_MODEL = os.environ.get("GEMINI_CHAT_MODEL", "models/gemini-2.0-flash")
+GEMINI_PLAN_MODEL = os.environ.get("GEMINI_PLAN_MODEL", "models/gemini-2.5-flash")
+GEMINI_CHAT_MODEL = os.environ.get("GEMINI_CHAT_MODEL", "models/gemini-2.5-flash")
 
 # Billing / SaaS (Faz 7)
 BILLING_ENFORCE_QUOTAS = os.environ.get("BILLING_ENFORCE_QUOTAS", "true").lower() == "true"

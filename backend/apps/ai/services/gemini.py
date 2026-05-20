@@ -35,7 +35,7 @@ def generate_json(
 ) -> dict[str, Any]:
     genai = _configure()
     model_id = model_name or getattr(
-        settings, "GEMINI_PLAN_MODEL", "models/gemini-2.0-flash"
+        settings, "GEMINI_PLAN_MODEL", "models/gemini-2.5-flash"
     )
     generation_config: dict[str, Any] = {
         "response_mime_type": "application/json",
@@ -79,7 +79,7 @@ def generate_text(
 ) -> str:
     genai = _configure()
     model_id = model_name or getattr(
-        settings, "GEMINI_CHAT_MODEL", "models/gemini-2.0-flash"
+        settings, "GEMINI_CHAT_MODEL", "models/gemini-2.5-flash"
     )
     model = genai.GenerativeModel(model_id)
     prompt = f"{system_prompt}\n\nUser:\n{user_message}"
