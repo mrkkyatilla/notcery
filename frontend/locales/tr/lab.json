@@ -1,0 +1,35 @@
+{
+  "navTitle": "Lab",
+  "tree": {
+    "title": "Dosyalar",
+    "upload": "Dosya yükle",
+    "newFolder": "Yeni klasör",
+    "root": "Tüm klasörler",
+    "focus": "RAG odağına ekle"
+  },
+  "viewer": {
+    "empty": "Önizleme için dosya seçin",
+    "notReadable": "Dosya içeriği yüklenemedi"
+  },
+  "artifacts": {
+    "title": "Agent çıktıları",
+    "hint": "Yapılandırılmış raporlar dosya olarak kaydedilir",
+    "empty": "Henüz çıktı yok — risk veya karşılaştırma modunu deneyin"
+  },
+  "chat": {
+    "title": "Agent",
+    "session": "Oturum {{id}}…",
+    "newSession": "Yeni oturum",
+    "useRag": "Çalışma alanı dosyalarını kullan (hibrit RAG)",
+    "outputMode": "Çıktı",
+    "modeFree": "Serbest metin",
+    "modeRisk": "Risk matrisi",
+    "modeCompare": "Karşılaştırma tablosu",
+    "focusCount": "{{count}} dosya odakta",
+    "empty": "Belgeleriniz hakkında sorun — analiz, özet veya karşılaştırma.",
+    "placeholder": "Mesajınız…",
+    "send": "Gönder",
+    "thinking": "Agent düşünüyor…",
+    "sources": "Kaynaklar"
+  }
+}

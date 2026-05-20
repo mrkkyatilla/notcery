@@ -2,6 +2,7 @@ import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { useAuthStore } from '@/features/auth/auth-store'
+import { usePublicConfig } from '@/features/config/use-public-config'
 import { BillingUsageChips } from '@/features/billing/BillingUsageChips'
 import { LocaleThemeControls } from '@/features/settings/LocaleThemeControls'
 import { WorkspaceSelector } from '@/features/workspace/WorkspaceSelector'
@@ -14,6 +15,8 @@ export function AppLayout() {
   const logout = useAuthStore((s) => s.logout)
   const navigate = useNavigate()
   const workspaceId = useWorkspaceStore((s) => s.activeWorkspaceId)
+  const { data: publicConfig } = usePublicConfig()
+  const labEnabled = publicConfig?.lab_enabled !== false
 
   return (
     <div className="min-h-screen">
@@ -44,6 +47,14 @@ export function AppLayout() {
                   >
                     {t('common:nav.library')}
                   </Link>
+                  {labEnabled ? (
+                    <Link
+                      to={`/w/${workspaceId}/lab`}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      {t('common:nav.lab')}
+                    </Link>
+                  ) : null}
                 </>
               ) : null}
               <Link

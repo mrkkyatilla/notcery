@@ -15,12 +15,14 @@ from apps.billing.models import (
 )
 from apps.core.exceptions import APIError
 from apps.indexer.models import Document
+from apps.lab.models import LabFile
 
 
 @dataclass(frozen=True)
 class QuotaLimits:
     plan_generate_per_week: int | None
     chat_messages_per_day: int | None
+    lab_messages_per_day: int | None
     storage_mb: int
 
 
@@ -28,11 +30,13 @@ QUOTA_BY_TIER: dict[str, QuotaLimits] = {
     PlanTier.FREE: QuotaLimits(
         plan_generate_per_week=3,
         chat_messages_per_day=50,
+        lab_messages_per_day=30,
         storage_mb=500,
     ),
     PlanTier.PRO: QuotaLimits(
         plan_generate_per_week=None,
         chat_messages_per_day=None,
+        lab_messages_per_day=None,
         storage_mb=5_000,
     ),
 }
@@ -80,12 +84,25 @@ def count_chat_messages_today(user) -> int:
     ).aggregate(total=Sum("amount"))["total"] or 0
 
 
+def count_lab_messages_today(user) -> int:
+    today = timezone.localdate()
+    return UsageRecord.objects.filter(
+        user=user,
+        metric=UsageMetric.LAB_MESSAGE,
+        period_date=today,
+    ).aggregate(total=Sum("amount"))["total"] or 0
+
+
 def get_storage_bytes_used(user) -> int:
-    total = (
+    doc_total = (
         Document.objects.filter(workspace__owner=user).aggregate(total=Sum("size_bytes"))["total"]
         or 0
     )
-    return int(total)
+    lab_total = (
+        LabFile.objects.filter(workspace__owner=user).aggregate(total=Sum("size_bytes"))["total"]
+        or 0
+    )
+    return int(doc_total) + int(lab_total)
 
 
 def get_usage_snapshot(user) -> dict:
@@ -93,6 +110,7 @@ def get_usage_snapshot(user) -> dict:
     tier = get_user_tier(user)
     plan_used = count_plan_generations_this_week(user)
     chat_used = count_chat_messages_today(user)
+    lab_used = count_lab_messages_today(user)
     storage_used = get_storage_bytes_used(user)
     storage_mb_used = round(storage_used / (1024 * 1024), 2)
 
@@ -101,11 +119,13 @@ def get_usage_snapshot(user) -> dict:
         "limits": {
             "plan_generate_per_week": limits.plan_generate_per_week,
             "chat_messages_per_day": limits.chat_messages_per_day,
+            "lab_messages_per_day": limits.lab_messages_per_day,
             "storage_mb": limits.storage_mb,
         },
         "usage": {
             "plan_generate_this_week": plan_used,
             "chat_messages_today": chat_used,
+            "lab_messages_today": lab_used,
             "storage_mb": storage_mb_used,
         },
     }
@@ -145,6 +165,22 @@ def enforce_quota(user, metric: str, *, extra_bytes: int = 0) -> None:
                 details={
                     "metric": metric,
                     "limit": limits.chat_messages_per_day,
+                    "used": used,
+                },
+            )
+
+    if metric == UsageMetric.LAB_MESSAGE:
+        if limits.lab_messages_per_day is None:
+            return
+        used = count_lab_messages_today(user)
+        if used >= limits.lab_messages_per_day:
+            raise APIError(
+                code="QUOTA_EXCEEDED",
+                message="Daily Lab agent message limit reached.",
+                status_code=status.HTTP_403_FORBIDDEN,
+                details={
+                    "metric": metric,
+                    "limit": limits.lab_messages_per_day,
                     "used": used,
                 },
             )

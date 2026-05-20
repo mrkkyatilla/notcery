@@ -33,6 +33,7 @@
     "message": "Kota limitine ulaştınız",
     "storage": "Depolama kotası doldu ({{used_mb}} / {{limit_mb}} MB). Pro'ya geçin veya dosya silin.",
     "plan": "Haftalık AI plan kotası doldu ({{used}} / {{limit}}). Pro'ya geçin.",
-    "chat": "Günlük chat kotası doldu ({{used}} / {{limit}}). Pro'ya geçin."
+    "chat": "Günlük chat kotası doldu ({{used}} / {{limit}}). Pro'ya geçin.",
+    "lab": "Günlük Lab agent kotası doldu ({{used}} / {{limit}}). Pro'ya geçin."
   }
 }

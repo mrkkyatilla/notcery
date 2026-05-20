@@ -91,6 +91,14 @@ cd /var/www/notcery && git pull
 | `./infra/deploy/install-production.sh --app-only` | Paketler hazır, sadece app |
 | `./infra/deploy/deploy.sh --local` | Günlük deploy |
 
+## Lab (agent çalışma alanı)
+
+Kurulumdan sonra `migrate` ile `lab_*` tabloları ve `pg_trgm` extension oluşur. Celery worker indeksler (`index_lab_file_task`).
+
+- UI: `/w/{workspaceId}/lab` (Notlar/Kütüphane ayrı kalır)
+- `.env`: `LAB_ENABLED`, `LAB_TOP_K`, `LAB_HYBRID_LEXICAL_WEIGHT`
+- Ücretsiz plan: 30 Lab mesaj/gün (Pro sınırsız)
+
 ## Sorun giderme
 
 | Belirti | Dosya |
@@ -98,3 +106,4 @@ cd /var/www/notcery && git pull
 | Port 5432/6379 dolu | `SUNUCU.md` |
 | Gemini location | `gemini-proxy.md` |
 | Storj / upload | `env-aciklama.md` |
+| Lab dosya `pending` | `systemctl status notcery-celery` |

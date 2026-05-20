@@ -595,6 +595,166 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/workspaces/{workspace_id}/lab/folders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listLabFolders"];
+        put?: never;
+        post: operations["createLabFolder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lab/folders/{folder_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deleteLabFolder"];
+        options?: never;
+        head?: never;
+        patch: operations["updateLabFolder"];
+        trace?: never;
+    };
+    "/workspaces/{workspace_id}/lab/files/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createLabUploadUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workspaces/{workspace_id}/lab/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listLabFiles"];
+        put?: never;
+        post: operations["createLabFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lab/files/{file_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deleteLabFile"];
+        options?: never;
+        head?: never;
+        patch: operations["updateLabFile"];
+        trace?: never;
+    };
+    "/lab/files/{file_id}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getLabFileContent"];
+        put: operations["updateLabFileContent"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workspaces/{workspace_id}/lab/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listLabSessions"];
+        put?: never;
+        post: operations["createLabSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lab/sessions/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["updateLabSession"];
+        trace?: never;
+    };
+    "/lab/sessions/{session_id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listLabMessages"];
+        put?: never;
+        post: operations["sendLabMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workspaces/{workspace_id}/lab/retrieve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["labRetrieve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -644,6 +804,8 @@ export interface components {
             feature_flags?: {
                 [key: string]: boolean;
             };
+            /** @description Lab agent workspace (IDE + RAG) available when true */
+            lab_enabled?: boolean;
         };
         BillingSummary: {
             /** @enum {string} */
@@ -1074,9 +1236,9 @@ export interface components {
             document_id?: string | null;
             /** Format: uuid */
             note_id?: string | null;
-            /** Human-readable source name (e.g. filename) */
+            /** @description Human-readable source name (e.g. filename) */
             label?: string;
-            /** Optional snippet; often empty (UI shows label only) */
+            /** @description Optional snippet; often empty (UI shows label only) */
             excerpt?: string;
         };
         ChatMessageResponse: {
@@ -1088,6 +1250,151 @@ export interface components {
                 content?: string;
             };
             citations?: components["schemas"]["ChatCitation"][];
+        };
+        LabFolder: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            workspace_id?: string;
+            /** Format: uuid */
+            parent_id?: string | null;
+            name?: string;
+            path?: string;
+            sort_order?: number;
+        };
+        LabFolderCreate: {
+            name: string;
+            /** Format: uuid */
+            parent_id?: string | null;
+        };
+        LabFolderUpdate: {
+            name?: string;
+            /** Format: uuid */
+            parent_id?: string | null;
+            sort_order?: number;
+        };
+        LabFile: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            workspace_id?: string;
+            /** Format: uuid */
+            folder_id?: string | null;
+            name?: string;
+            mime_type?: string;
+            extension?: string;
+            size_bytes?: number;
+            /** @enum {string} */
+            index_status?: "pending" | "processing" | "ready" | "failed";
+            error_message?: string;
+            /** @enum {string} */
+            kind?: "upload" | "artifact" | "import";
+            /** Format: uuid */
+            source_session_id?: string | null;
+        };
+        LabUploadUrlRequest: {
+            filename: string;
+            mime_type?: string;
+            size_bytes: number;
+            /** Format: uuid */
+            folder_id?: string;
+        };
+        LabUploadUrlResponse: {
+            upload_url?: string;
+            file_key?: string;
+            expires_in?: number;
+        };
+        LabFileCreate: {
+            file_key: string;
+            original_filename: string;
+            mime_type?: string;
+            size_bytes: number;
+            /** Format: uuid */
+            folder_id?: string;
+        };
+        LabFileUpdate: {
+            name?: string;
+            /** Format: uuid */
+            folder_id?: string;
+        };
+        LabFileContent: {
+            content?: string;
+            name?: string;
+            mime_type?: string;
+        };
+        LabFileContentUpdate: {
+            content: string;
+        };
+        LabSession: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            workspace_id?: string;
+            title?: string;
+            active_file_ids?: string[];
+            settings?: Record<string, never>;
+        };
+        LabSessionCreate: {
+            title?: string;
+            active_file_ids?: string[];
+        };
+        LabSessionUpdate: {
+            title?: string;
+            active_file_ids?: string[];
+            settings?: Record<string, never>;
+        };
+        LabMessageContext: {
+            use_rag?: boolean;
+            /** @enum {string} */
+            output_mode?: "free" | "risk_matrix" | "comparison_table";
+            active_file_ids?: string[];
+        };
+        LabMessageCreate: {
+            content: string;
+            context?: components["schemas"]["LabMessageContext"];
+        };
+        LabMessage: {
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            role?: "user" | "assistant";
+            content?: string;
+            citations?: components["schemas"]["LabCitation"][];
+            structured_result?: Record<string, never> | null;
+            /** Format: date-time */
+            created_at?: string;
+        };
+        LabCitation: {
+            type?: string;
+            /** Format: uuid */
+            chunk_id?: string;
+            /** Format: uuid */
+            lab_file_id?: string;
+            label?: string;
+            excerpt?: string;
+        };
+        LabMessageResponse: {
+            message?: {
+                /** Format: uuid */
+                id?: string;
+                role?: string;
+                content?: string;
+            };
+            citations?: components["schemas"]["LabCitation"][];
+            structured_result?: Record<string, never> | null;
+            artifact_file?: {
+                /** Format: uuid */
+                id?: string;
+                name?: string;
+            } | null;
+        };
+        LabRetrieveRequest: {
+            query: string;
+            top_k?: number;
+            active_file_ids?: string[];
+        };
+        LabRetrieveResponse: {
+            results?: Record<string, never>[];
         };
     };
     responses: {
@@ -2333,6 +2640,413 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ChatSession"];
+                };
+            };
+        };
+    };
+    listLabFolders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        results?: components["schemas"]["LabFolder"][];
+                    };
+                };
+            };
+        };
+    };
+    createLabFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabFolderCreate"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabFolder"];
+                };
+            };
+        };
+    };
+    deleteLabFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                folder_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Silindi */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateLabFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                folder_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabFolderUpdate"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabFolder"];
+                };
+            };
+        };
+    };
+    createLabUploadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabUploadUrlRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabUploadUrlResponse"];
+                };
+            };
+        };
+    };
+    listLabFiles: {
+        parameters: {
+            query?: {
+                folder_id?: string;
+                kind?: string;
+                session_id?: string;
+            };
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        results?: components["schemas"]["LabFile"][];
+                    };
+                };
+            };
+        };
+    };
+    createLabFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabFileCreate"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabFile"];
+                };
+            };
+        };
+    };
+    deleteLabFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Silindi */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateLabFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabFileUpdate"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabFile"];
+                };
+            };
+        };
+    };
+    getLabFileContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabFileContent"];
+                };
+            };
+        };
+    };
+    updateLabFileContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabFileContentUpdate"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabFile"];
+                };
+            };
+        };
+    };
+    listLabSessions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        results?: components["schemas"]["LabSession"][];
+                    };
+                };
+            };
+        };
+    };
+    createLabSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabSessionCreate"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabSession"];
+                };
+            };
+        };
+    };
+    updateLabSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabSessionUpdate"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabSession"];
+                };
+            };
+        };
+    };
+    listLabMessages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        results?: components["schemas"]["LabMessage"][];
+                    };
+                };
+            };
+        };
+    };
+    sendLabMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabMessageCreate"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabMessageResponse"];
+                };
+            };
+        };
+    };
+    labRetrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabRetrieveRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabRetrieveResponse"];
                 };
             };
         };

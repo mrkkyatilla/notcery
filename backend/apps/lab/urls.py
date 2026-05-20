@@ -1,0 +1,67 @@
+from django.urls import path
+
+from .views import (
+    LabFileContentView,
+    LabFileDetailView,
+    LabFileListCreateView,
+    LabFileUploadUrlView,
+    LabFolderDetailView,
+    LabFolderListCreateView,
+    LabMessageListCreateView,
+    LabRetrieveView,
+    LabSessionDetailView,
+    LabSessionListCreateView,
+)
+
+urlpatterns = [
+    path(
+        "workspaces/<uuid:workspace_id>/lab/folders",
+        LabFolderListCreateView.as_view(),
+        name="lab-folder-list",
+    ),
+    path(
+        "lab/folders/<uuid:folder_id>",
+        LabFolderDetailView.as_view(),
+        name="lab-folder-detail",
+    ),
+    path(
+        "workspaces/<uuid:workspace_id>/lab/files/upload-url",
+        LabFileUploadUrlView.as_view(),
+        name="lab-file-upload-url",
+    ),
+    path(
+        "workspaces/<uuid:workspace_id>/lab/files",
+        LabFileListCreateView.as_view(),
+        name="lab-file-list",
+    ),
+    path(
+        "lab/files/<uuid:file_id>",
+        LabFileDetailView.as_view(),
+        name="lab-file-detail",
+    ),
+    path(
+        "lab/files/<uuid:file_id>/content",
+        LabFileContentView.as_view(),
+        name="lab-file-content",
+    ),
+    path(
+        "workspaces/<uuid:workspace_id>/lab/sessions",
+        LabSessionListCreateView.as_view(),
+        name="lab-session-list",
+    ),
+    path(
+        "lab/sessions/<uuid:session_id>",
+        LabSessionDetailView.as_view(),
+        name="lab-session-detail",
+    ),
+    path(
+        "lab/sessions/<uuid:session_id>/messages",
+        LabMessageListCreateView.as_view(),
+        name="lab-messages",
+    ),
+    path(
+        "workspaces/<uuid:workspace_id>/lab/retrieve",
+        LabRetrieveView.as_view(),
+        name="lab-retrieve",
+    ),
+]

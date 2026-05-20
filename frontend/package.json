@@ -16,7 +16,7 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "typecheck": "tsc -b --noEmit",
-    "api:types": "openapi-typescript ../docs/openapi.yml -o src/shared/api/schema.d.ts",
+    "api:types": "openapi-typescript ../backend/openapi.yml -o src/shared/api/schema.d.ts",
     "api:types:check": "node scripts/api-types-check.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "build:e2e": "vite build --mode e2e",

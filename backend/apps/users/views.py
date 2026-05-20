@@ -60,6 +60,7 @@ class PublicConfigView(APIView):
                     "client_id": settings.GOOGLE_OAUTH_CLIENT_ID or "",
                 },
                 "feature_flags": get_public_feature_flags(),
+                "lab_enabled": getattr(settings, "LAB_ENABLED", True),
             }
         )
 

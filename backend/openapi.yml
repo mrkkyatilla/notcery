@@ -929,6 +929,336 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChatSession'
 
+  /workspaces/{workspace_id}/lab/folders:
+    get:
+      tags: [Lab]
+      operationId: listLabFolders
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabFolder'
+    post:
+      tags: [Lab]
+      operationId: createLabFolder
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabFolderCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabFolder'
+
+  /lab/folders/{folder_id}:
+    patch:
+      tags: [Lab]
+      operationId: updateLabFolder
+      parameters:
+        - name: folder_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabFolderUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabFolder'
+    delete:
+      tags: [Lab]
+      operationId: deleteLabFolder
+      parameters:
+        - name: folder_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Silindi
+
+  /workspaces/{workspace_id}/lab/files/upload-url:
+    post:
+      tags: [Lab]
+      operationId: createLabUploadUrl
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabUploadUrlRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabUploadUrlResponse'
+
+  /workspaces/{workspace_id}/lab/files:
+    get:
+      tags: [Lab]
+      operationId: listLabFiles
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+        - name: folder_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: kind
+          in: query
+          schema:
+            type: string
+        - name: session_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabFile'
+    post:
+      tags: [Lab]
+      operationId: createLabFile
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabFileCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabFile'
+
+  /lab/files/{file_id}:
+    patch:
+      tags: [Lab]
+      operationId: updateLabFile
+      parameters:
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabFileUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabFile'
+    delete:
+      tags: [Lab]
+      operationId: deleteLabFile
+      parameters:
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Silindi
+
+  /lab/files/{file_id}/content:
+    get:
+      tags: [Lab]
+      operationId: getLabFileContent
+      parameters:
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabFileContent'
+    put:
+      tags: [Lab]
+      operationId: updateLabFileContent
+      parameters:
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabFileContentUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabFile'
+
+  /workspaces/{workspace_id}/lab/sessions:
+    get:
+      tags: [Lab]
+      operationId: listLabSessions
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabSession'
+    post:
+      tags: [Lab]
+      operationId: createLabSession
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabSessionCreate'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabSession'
+
+  /lab/sessions/{session_id}:
+    patch:
+      tags: [Lab]
+      operationId: updateLabSession
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabSessionUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabSession'
+
+  /lab/sessions/{session_id}/messages:
+    get:
+      tags: [Lab]
+      operationId: listLabMessages
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabMessage'
+    post:
+      tags: [Lab]
+      operationId: sendLabMessage
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabMessageCreate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabMessageResponse'
+
+  /workspaces/{workspace_id}/lab/retrieve:
+    post:
+      tags: [Lab]
+      operationId: labRetrieve
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabRetrieveRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabRetrieveResponse'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1088,6 +1418,9 @@ components:
           type: object
           additionalProperties:
             type: boolean
+        lab_enabled:
+          type: boolean
+          description: Lab agent workspace (IDE + RAG) available when true
 
     BillingSummary:
       type: object
@@ -1947,6 +2280,305 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChatCitation'
+
+    LabFolder:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+        name:
+          type: string
+        path:
+          type: string
+        sort_order:
+          type: integer
+
+    LabFolderCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+
+    LabFolderUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+        sort_order:
+          type: integer
+
+    LabFile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        folder_id:
+          type: string
+          format: uuid
+          nullable: true
+        name:
+          type: string
+        mime_type:
+          type: string
+        extension:
+          type: string
+        size_bytes:
+          type: integer
+        index_status:
+          type: string
+          enum: [pending, processing, ready, failed]
+        error_message:
+          type: string
+        kind:
+          type: string
+          enum: [upload, artifact, import]
+        source_session_id:
+          type: string
+          format: uuid
+          nullable: true
+
+    LabUploadUrlRequest:
+      type: object
+      required: [filename, size_bytes]
+      properties:
+        filename:
+          type: string
+        mime_type:
+          type: string
+        size_bytes:
+          type: integer
+        folder_id:
+          type: string
+          format: uuid
+
+    LabUploadUrlResponse:
+      type: object
+      properties:
+        upload_url:
+          type: string
+        file_key:
+          type: string
+        expires_in:
+          type: integer
+
+    LabFileCreate:
+      type: object
+      required: [file_key, original_filename, size_bytes]
+      properties:
+        file_key:
+          type: string
+        original_filename:
+          type: string
+        mime_type:
+          type: string
+        size_bytes:
+          type: integer
+        folder_id:
+          type: string
+          format: uuid
+
+    LabFileUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        folder_id:
+          type: string
+          format: uuid
+
+    LabFileContent:
+      type: object
+      properties:
+        content:
+          type: string
+        name:
+          type: string
+        mime_type:
+          type: string
+
+    LabFileContentUpdate:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+
+    LabSession:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        active_file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        settings:
+          type: object
+
+    LabSessionCreate:
+      type: object
+      properties:
+        title:
+          type: string
+        active_file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    LabSessionUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        active_file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        settings:
+          type: object
+
+    LabMessageContext:
+      type: object
+      properties:
+        use_rag:
+          type: boolean
+        output_mode:
+          type: string
+          enum: [free, risk_matrix, comparison_table]
+        active_file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    LabMessageCreate:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+        context:
+          $ref: '#/components/schemas/LabMessageContext'
+
+    LabMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        citations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabCitation'
+        structured_result:
+          type: object
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    LabCitation:
+      type: object
+      properties:
+        type:
+          type: string
+        chunk_id:
+          type: string
+          format: uuid
+        lab_file_id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        excerpt:
+          type: string
+
+    LabMessageResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            role:
+              type: string
+            content:
+              type: string
+        citations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabCitation'
+        structured_result:
+          type: object
+          nullable: true
+        artifact_file:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+
+    LabRetrieveRequest:
+      type: object
+      required: [query]
+      properties:
+        query:
+          type: string
+        top_k:
+          type: integer
+        active_file_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    LabRetrieveResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
 
 security:
   - bearerAuth: []

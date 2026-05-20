@@ -6,12 +6,14 @@ import {
   OnboardingOnlyRoute,
   ProtectedRoute,
 } from '@/app/guards/AuthGuards'
+import { AgentLayout } from '@/app/layouts/AgentLayout'
 import { AppLayout } from '@/app/layouts/AppLayout'
 import { AuthLayout } from '@/app/layouts/AuthLayout'
 import { NotesLayout } from '@/app/layouts/NotesLayout'
 import { SettingsLayout } from '@/app/layouts/SettingsLayout'
 import {
   DashboardPage,
+  LabPage,
   LibraryPage,
   LoginPage,
   NotesPage,
@@ -73,6 +75,13 @@ export const router = createBrowserRouter([
             children: [
               { path: 'w/:workspaceId/notes', element: wrapLazyPage(NotesPage) },
               { path: 'w/:workspaceId/notes/:noteId', element: wrapLazyPage(NotesPage) },
+            ],
+          },
+          {
+            element: <AgentLayout />,
+            children: [
+              { path: 'w/:workspaceId/lab', element: wrapLazyPage(LabPage) },
+              { path: 'w/:workspaceId/lab/files/:fileId', element: wrapLazyPage(LabPage) },
             ],
           },
         ],

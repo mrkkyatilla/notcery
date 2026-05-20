@@ -44,6 +44,7 @@ class Subscription(models.Model):
 class UsageMetric(models.TextChoices):
     PLAN_GENERATE = "plan_generate", "Plan generate"
     CHAT_MESSAGE = "chat_message", "Chat message"
+    LAB_MESSAGE = "lab_message", "Lab agent message"
     STORAGE_BYTES = "storage_bytes", "Storage bytes"
 
 

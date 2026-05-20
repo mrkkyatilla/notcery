@@ -1,0 +1,35 @@
+{
+  "navTitle": "Lab",
+  "tree": {
+    "title": "Files",
+    "upload": "Upload file",
+    "newFolder": "New folder",
+    "root": "All folders",
+    "focus": "Include in RAG focus"
+  },
+  "viewer": {
+    "empty": "Select a file to preview",
+    "notReadable": "Could not load file content"
+  },
+  "artifacts": {
+    "title": "Agent outputs",
+    "hint": "Structured reports saved as files",
+    "empty": "No artifacts yet — use risk or compare mode"
+  },
+  "chat": {
+    "title": "Agent",
+    "session": "Session {{id}}…",
+    "newSession": "New session",
+    "useRag": "Use workspace files (hybrid RAG)",
+    "outputMode": "Output",
+    "modeFree": "Free text",
+    "modeRisk": "Risk matrix",
+    "modeCompare": "Comparison table",
+    "focusCount": "{{count}} file(s) in focus",
+    "empty": "Ask about your documents — analysis, summary, or comparison.",
+    "placeholder": "Your message…",
+    "send": "Send",
+    "thinking": "Agent is thinking…",
+    "sources": "Sources"
+  }
+}

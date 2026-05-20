@@ -55,6 +55,7 @@ const publicConfig: PublicConfig = {
   feature_flags: {
     ai_grounding: false,
   },
+  lab_enabled: true,
 }
 
 const mockUser: User = {

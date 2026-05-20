@@ -52,6 +52,17 @@ export function showApiError(error: unknown): void {
       )
       return
     }
+    if (metric === 'lab_message') {
+      toast.error(
+        i18n.t('QUOTA_EXCEEDED.lab', {
+          ns: 'errors',
+          limit: String(details?.limit ?? '—'),
+          used: String(details?.used ?? '—'),
+        }),
+        { action: upgradeAction },
+      )
+      return
+    }
     toast.error(i18n.t('QUOTA_EXCEEDED.message', { ns: 'errors', defaultValue: error.message }), {
       action: upgradeAction,
     })

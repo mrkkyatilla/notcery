@@ -18,6 +18,9 @@ export const PlannerPage = lazy(() =>
 export const LibraryPage = lazy(() =>
   import('@/app/pages/LibraryPage').then((m) => ({ default: m.LibraryPage })),
 )
+export const LabPage = lazy(() =>
+  import('@/app/pages/LabPage').then((m) => ({ default: m.LabPage })),
+)
 export const NotesPage = lazy(() =>
   import('@/app/pages/NotesPage').then((m) => ({ default: m.NotesPage })),
 )

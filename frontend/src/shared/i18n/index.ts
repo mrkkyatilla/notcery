@@ -9,6 +9,7 @@ import enErrors from '../../../locales/en/errors.json'
 import enAiPlan from '../../../locales/en/aiPlan.json'
 import enBilling from '../../../locales/en/billing.json'
 import enChat from '../../../locales/en/chat.json'
+import enLab from '../../../locales/en/lab.json'
 import enLanding from '../../../locales/en/landing.json'
 import enLibrary from '../../../locales/en/library.json'
 import enNotes from '../../../locales/en/notes.json'
@@ -20,6 +21,7 @@ import trErrors from '../../../locales/tr/errors.json'
 import trAiPlan from '../../../locales/tr/aiPlan.json'
 import trBilling from '../../../locales/tr/billing.json'
 import trChat from '../../../locales/tr/chat.json'
+import trLab from '../../../locales/tr/lab.json'
 import trLanding from '../../../locales/tr/landing.json'
 import trLibrary from '../../../locales/tr/library.json'
 import trNotes from '../../../locales/tr/notes.json'
@@ -38,6 +40,7 @@ export const namespaces = [
   'notes',
   'library',
   'chat',
+  'lab',
   'aiPlan',
 ] as const
 
@@ -53,6 +56,7 @@ export const resources = {
     notes: trNotes,
     library: trLibrary,
     chat: trChat,
+    lab: trLab,
     aiPlan: trAiPlan,
   },
   en: {
@@ -66,6 +70,7 @@ export const resources = {
     notes: enNotes,
     library: enLibrary,
     chat: enChat,
+    lab: enLab,
     aiPlan: enAiPlan,
   },
 } as const

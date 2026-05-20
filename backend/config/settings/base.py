@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "apps.ai",
     "apps.billing",
     "apps.feedback",
+    "apps.lab",
 ]
 
 MIDDLEWARE = [
@@ -169,6 +170,12 @@ AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "us-east-1")
 # Indexer / RAG
 INDEXER_EMBEDDING_BACKEND = os.environ.get("INDEXER_EMBEDDING_BACKEND", "auto")
 INDEXER_MIN_SIMILARITY = float(os.environ.get("INDEXER_MIN_SIMILARITY", "0.35"))
+
+# Lab agent workspace
+LAB_ENABLED = os.environ.get("LAB_ENABLED", "true").lower() == "true"
+LAB_TOP_K = int(os.environ.get("LAB_TOP_K", "12"))
+LAB_MIN_SIMILARITY = float(os.environ.get("LAB_MIN_SIMILARITY", "0.32"))
+LAB_HYBRID_LEXICAL_WEIGHT = float(os.environ.get("LAB_HYBRID_LEXICAL_WEIGHT", "0.35"))
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 # Optional: HTTP(S) proxy for Gemini only (e.g. http://user:pass@host:port). Not used for Storj/S3.
 GEMINI_HTTP_PROXY = os.environ.get("GEMINI_HTTP_PROXY", "")

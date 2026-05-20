@@ -33,6 +33,7 @@
     "message": "Quota limit reached",
     "storage": "Storage quota exceeded ({{used_mb}} / {{limit_mb}} MB). Upgrade or delete files.",
     "plan": "Weekly AI plan quota reached ({{used}} / {{limit}}). Upgrade to Pro.",
-    "chat": "Daily chat quota reached ({{used}} / {{limit}}). Upgrade to Pro."
+    "chat": "Daily chat quota reached ({{used}} / {{limit}}). Upgrade to Pro.",
+    "lab": "Daily Lab agent quota reached ({{used}} / {{limit}}). Upgrade to Pro."
   }
 }
