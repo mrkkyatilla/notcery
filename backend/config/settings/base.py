@@ -172,7 +172,9 @@ INDEXER_MIN_SIMILARITY = float(os.environ.get("INDEXER_MIN_SIMILARITY", "0.35"))
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 # Optional: HTTP(S) proxy for Gemini only (e.g. http://user:pass@host:port). Not used for Storj/S3.
 GEMINI_HTTP_PROXY = os.environ.get("GEMINI_HTTP_PROXY", "")
-GEMINI_EMBEDDING_MODEL = os.environ.get("GEMINI_EMBEDDING_MODEL", "models/text-embedding-004")
+GEMINI_EMBEDDING_MODEL = os.environ.get(
+    "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-001"
+)
 
 # AI orchestration (Faz 5)
 AI_BACKEND = os.environ.get("AI_BACKEND", "auto")

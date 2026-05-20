@@ -101,8 +101,10 @@ AI_BACKEND=auto
 INDEXER_EMBEDDING_BACKEND=auto
 GEMINI_CHAT_MODEL=models/gemini-2.5-flash
 GEMINI_PLAN_MODEL=models/gemini-2.5-flash
-GEMINI_EMBEDDING_MODEL=models/text-embedding-004
+GEMINI_EMBEDDING_MODEL=models/gemini-embedding-001
 ```
+
+`text-embedding-004` artık `embedContent` ile çalışmıyor; chat RAG bu yüzden 500 verebilir. Model değişince mevcut kütüphane/nota için **yeniden indeksleme** (Celery) önerilir.
 
 ### `User location is not supported for the API use`
 
