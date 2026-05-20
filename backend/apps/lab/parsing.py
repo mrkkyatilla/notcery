@@ -40,6 +40,7 @@ EXTENSION_MIME = {
     ".gif": "image/gif",
     ".webp": "image/webp",
     ".svg": "image/svg+xml",
+    ".zip": "application/zip",
 }
 
 TEXT_PREVIEW_EXTENSIONS = {

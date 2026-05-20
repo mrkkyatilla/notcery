@@ -176,6 +176,17 @@ LAB_ENABLED = os.environ.get("LAB_ENABLED", "true").lower() == "true"
 LAB_TOP_K = int(os.environ.get("LAB_TOP_K", "12"))
 LAB_MIN_SIMILARITY = float(os.environ.get("LAB_MIN_SIMILARITY", "0.32"))
 LAB_HYBRID_LEXICAL_WEIGHT = float(os.environ.get("LAB_HYBRID_LEXICAL_WEIGHT", "0.35"))
+LAB_IMPORT_ZIP_MAX_BYTES = int(os.environ.get("LAB_IMPORT_ZIP_MAX_BYTES", str(200 * 1024 * 1024)))
+LAB_IMPORT_MAX_FILES = int(os.environ.get("LAB_IMPORT_MAX_FILES", "500"))
+LAB_IMPORT_GIT_TIMEOUT_SEC = int(os.environ.get("LAB_IMPORT_GIT_TIMEOUT_SEC", "120"))
+LAB_IMPORT_GIT_ALLOWED_HOSTS = [
+    h.strip()
+    for h in os.environ.get(
+        "LAB_IMPORT_GIT_ALLOWED_HOSTS",
+        "github.com,gitlab.com,bitbucket.org",
+    ).split(",")
+    if h.strip()
+]
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 # Optional: HTTP(S) proxy for Gemini only (e.g. http://user:pass@host:port). Not used for Storj/S3.
 GEMINI_HTTP_PROXY = os.environ.get("GEMINI_HTTP_PROXY", "")

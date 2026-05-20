@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.lab.models import LabChunk, LabFile, LabFolder, LabMessage, LabSession
+from apps.lab.models import LabChunk, LabFile, LabFolder, LabImport, LabMessage, LabSession
 
 
 @admin.register(LabFolder)
@@ -26,3 +26,8 @@ class LabSessionAdmin(admin.ModelAdmin):
 @admin.register(LabMessage)
 class LabMessageAdmin(admin.ModelAdmin):
     list_display = ("session", "role", "created_at")
+
+
+@admin.register(LabImport)
+class LabImportAdmin(admin.ModelAdmin):
+    list_display = ("source_label", "workspace", "source_type", "status", "created_at")

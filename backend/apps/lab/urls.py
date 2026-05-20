@@ -8,6 +8,10 @@ from .views import (
     LabFileUploadUrlView,
     LabFolderDetailView,
     LabFolderListCreateView,
+    LabImportDetailView,
+    LabImportGitCreateView,
+    LabImportListView,
+    LabImportZipCreateView,
     LabMessageListCreateView,
     LabRetrieveView,
     LabSessionDetailView,
@@ -69,5 +73,25 @@ urlpatterns = [
         "workspaces/<uuid:workspace_id>/lab/retrieve",
         LabRetrieveView.as_view(),
         name="lab-retrieve",
+    ),
+    path(
+        "workspaces/<uuid:workspace_id>/lab/imports",
+        LabImportListView.as_view(),
+        name="lab-import-list",
+    ),
+    path(
+        "workspaces/<uuid:workspace_id>/lab/imports/zip",
+        LabImportZipCreateView.as_view(),
+        name="lab-import-zip",
+    ),
+    path(
+        "workspaces/<uuid:workspace_id>/lab/imports/git",
+        LabImportGitCreateView.as_view(),
+        name="lab-import-git",
+    ),
+    path(
+        "lab/imports/<uuid:import_id>",
+        LabImportDetailView.as_view(),
+        name="lab-import-detail",
     ),
 ]

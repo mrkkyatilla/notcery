@@ -1,7 +1,9 @@
 import { ChevronDown, ChevronRight, FolderPlus } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from '@tanstack/react-query'
 
+import { LabImportPanel } from '@/features/lab/components/LabImportPanel'
 import { fileIconColorClass } from '@/features/lab/file-icon-colors'
 import { folderIcon, labFileIcon } from '@/features/lab/file-icons'
 import {
@@ -67,6 +69,7 @@ export function FileTree({
   onToggleFocus,
 }: Props) {
   const { t } = useTranslation('lab')
+  const qc = useQueryClient()
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set(['/']))
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null)
   const [dropTargetFolderId, setDropTargetFolderId] = useState<string | null>(null)
@@ -329,6 +332,14 @@ export function FileTree({
   return (
     <div className="flex h-full min-h-0 flex-col border-r border-[#3c3c3c] bg-[#252526] text-[#cccccc]">
       <div className="shrink-0 space-y-2 border-b border-[#3c3c3c] p-2">
+        <LabImportPanel
+          workspaceId={workspaceId}
+          uploadFolderId={uploadFolderId}
+          onImportDone={() => {
+            void qc.invalidateQueries({ queryKey: ['lab-folders', workspaceId] })
+            void qc.invalidateQueries({ queryKey: ['lab-files', workspaceId] })
+          }}
+        />
         <p className="text-[11px] font-semibold uppercase tracking-wider text-[#858585]">
           {t('tree.title')}
         </p>

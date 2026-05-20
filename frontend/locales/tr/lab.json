@@ -20,6 +20,22 @@
     "binaryHint": "Bu format için önizleme yok. Storj üzerinden indirin veya harici açın.",
     "download": "İndir"
   },
+  "import": {
+    "title": "Proje içe aktar",
+    "zip": "Zip arşivi yükle",
+    "git": "Public Git repo klonla",
+    "hideGit": "Git formunu gizle",
+    "gitUrl": "https://github.com/org/repo",
+    "gitBranch": "Dal (isteğe bağlı)",
+    "gitLabel": "Klasör adı (isteğe bağlı)",
+    "gitSubmit": "Klonla ve içe aktar",
+    "hint": "Zip veya public Git (GitHub, GitLab, Bitbucket). node_modules, .git, binary atlanır.",
+    "started": "İçe aktarma başladı — arka planda işleniyor",
+    "completed": "İçe aktarma tamamlandı",
+    "failed": "İçe aktarma başarısız",
+    "progress": "Durum: {{status}}",
+    "stats": "{{imported}} / {{total}} dosya ({{skipped}} atlandı)"
+  },
   "layout": {
     "hideChat": "Agent panelini gizle",
     "showChat": "Agent panelini göster"

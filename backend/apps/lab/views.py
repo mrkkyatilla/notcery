@@ -14,6 +14,7 @@ from apps.lab.models import (
     LabChunk,
     LabFile,
     LabFolder,
+    LabImport,
     LabIndexStatus,
     LabMessage,
     LabSession,
@@ -27,6 +28,9 @@ from apps.lab.serializers import (
     LabFolderCreateSerializer,
     LabFolderSerializer,
     LabFolderUpdateSerializer,
+    LabImportGitSerializer,
+    LabImportSerializer,
+    LabImportZipSerializer,
     LabMessageCreateSerializer,
     LabMessageSerializer,
     LabRetrieveRequestSerializer,
@@ -37,6 +41,7 @@ from apps.lab.serializers import (
     LabUploadUrlRequestSerializer,
     LabUploadUrlResponseSerializer,
 )
+from apps.lab.services.import_job import start_git_import, start_zip_import
 from apps.lab.services.agent import send_lab_message
 from apps.lab.parsing import is_image_previewable, is_pdf_previewable, is_text_previewable
 from apps.lab.storage import (
@@ -437,3 +442,83 @@ class LabRetrieveView(APIView):
         return Response(
             {"results": LabRetrievedChunkSerializer(chunks, many=True).data}
         )
+
+
+class LabImportListView(APIView):
+    permission_classes = [IsWorkspaceOwner]
+
+    def get(self, request, workspace_id):
+        workspace = get_owned_workspace(request.user, workspace_id)
+        imports = LabImport.objects.filter(workspace=workspace).select_related("root_folder")[:20]
+        return Response({"results": LabImportSerializer(imports, many=True).data})
+
+
+class LabImportZipCreateView(APIView):
+    permission_classes = [IsWorkspaceOwner]
+
+    def post(self, request, workspace_id):
+        workspace = get_owned_workspace(request.user, workspace_id)
+        serializer = LabImportZipSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        try:
+            lab_import = start_zip_import(
+                workspace=workspace,
+                user=request.user,
+                file_key=data["file_key"],
+                original_filename=data["original_filename"],
+                size_bytes=data["size_bytes"],
+                parent_folder_id=data.get("parent_folder_id"),
+                label=data.get("label"),
+            )
+        except ValueError as exc:
+            raise APIError(
+                code="VALIDATION_ERROR",
+                message=str(exc),
+                status_code=status.HTTP_400_BAD_REQUEST,
+            ) from exc
+        return Response(LabImportSerializer(lab_import).data, status=status.HTTP_201_CREATED)
+
+
+class LabImportGitCreateView(APIView):
+    permission_classes = [IsWorkspaceOwner]
+
+    def post(self, request, workspace_id):
+        workspace = get_owned_workspace(request.user, workspace_id)
+        serializer = LabImportGitSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        try:
+            lab_import = start_git_import(
+                workspace=workspace,
+                user=request.user,
+                url=data["url"],
+                branch=data.get("branch") or None,
+                parent_folder_id=data.get("parent_folder_id"),
+                label=data.get("label"),
+            )
+        except ValueError as exc:
+            raise APIError(
+                code="VALIDATION_ERROR",
+                message=str(exc),
+                status_code=status.HTTP_400_BAD_REQUEST,
+            ) from exc
+        return Response(LabImportSerializer(lab_import).data, status=status.HTTP_201_CREATED)
+
+
+class LabImportDetailView(APIView):
+    permission_classes = [IsWorkspaceOwner]
+
+    def get_import(self, request, import_id) -> LabImport:
+        try:
+            lab_import = LabImport.objects.select_related("workspace", "root_folder").get(
+                id=import_id
+            )
+        except LabImport.DoesNotExist as exc:
+            raise APIError(code="NOT_FOUND", status_code=status.HTTP_404_NOT_FOUND) from exc
+        get_owned_workspace(request.user, lab_import.workspace_id)
+        return lab_import
+
+    def get(self, request, import_id):
+        lab_import = self.get_import(request, import_id)
+        return Response(LabImportSerializer(lab_import).data)

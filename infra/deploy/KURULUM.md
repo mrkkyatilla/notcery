@@ -93,11 +93,13 @@ cd /var/www/notcery && git pull
 
 ## Lab (agent çalışma alanı)
 
-Kurulumdan sonra `migrate` ile `lab_*` tabloları ve `pg_trgm` extension oluşur. Celery worker indeksler (`index_lab_file_task`).
+Kurulumdan sonra `migrate` ile `lab_*` tabloları ve `pg_trgm` extension oluşur. Celery worker indeksler (`index_lab_file_task`, `import_lab_project_task`).
 
 - UI: `/w/{workspaceId}/lab` (Notlar/Kütüphane ayrı kalır)
-- `.env`: `LAB_ENABLED`, `LAB_TOP_K`, `LAB_HYBRID_LEXICAL_WEIGHT`
+- `.env`: `LAB_ENABLED`, `LAB_TOP_K`, `LAB_HYBRID_LEXICAL_WEIGHT`, `LAB_IMPORT_*`
 - Ücretsiz plan: 30 Lab mesaj/gün (Pro sınırsız)
+- **Toplu içe aktarma**: Gezginde zip veya public Git URL (GitHub/GitLab/Bitbucket); sunucuda `git` paketi gerekir (`apt install git`)
+- Zip max 200 MB; import başına max 500 dosya; `node_modules` / `.git` otomatik atlanır
 
 ## Sorun giderme
 

@@ -1279,6 +1279,78 @@ paths:
               schema:
                 $ref: '#/components/schemas/LabRetrieveResponse'
 
+  /workspaces/{workspace_id}/lab/imports:
+    get:
+      tags: [Lab]
+      operationId: listLabImports
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabImport'
+
+  /workspaces/{workspace_id}/lab/imports/zip:
+    post:
+      tags: [Lab]
+      operationId: createLabImportZip
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabImportZipRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabImport'
+
+  /workspaces/{workspace_id}/lab/imports/git:
+    post:
+      tags: [Lab]
+      operationId: createLabImportGit
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabImportGitRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabImport'
+
+  /lab/imports/{import_id}:
+    get:
+      tags: [Lab]
+      operationId: getLabImport
+      parameters:
+        - name: import_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabImport'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -2610,6 +2682,70 @@ components:
           type: array
           items:
             type: object
+
+    LabImportZipRequest:
+      type: object
+      required: [file_key, original_filename, size_bytes]
+      properties:
+        file_key:
+          type: string
+        original_filename:
+          type: string
+        size_bytes:
+          type: integer
+        parent_folder_id:
+          type: string
+          format: uuid
+        label:
+          type: string
+
+    LabImportGitRequest:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+          format: uri
+        branch:
+          type: string
+        parent_folder_id:
+          type: string
+          format: uuid
+        label:
+          type: string
+
+    LabImport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, running, completed, failed, cancelled]
+        source_type:
+          type: string
+          enum: [zip, git]
+        source_label:
+          type: string
+        source_payload:
+          type: object
+        root_folder_id:
+          type: string
+          format: uuid
+        stats:
+          type: object
+        error_message:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
 
 security:
   - bearerAuth: []

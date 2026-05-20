@@ -5,6 +5,7 @@ from rest_framework import serializers
 from apps.lab.models import (
     LabFile,
     LabFolder,
+    LabImport,
     LabMessage,
     LabOutputMode,
     LabSession,
@@ -12,8 +13,10 @@ from apps.lab.models import (
 from apps.lab.parsing import EXTENSION_MIME, guess_mime_from_name
 
 MAX_UPLOAD_BYTES = 50 * 1024 * 1024
+MAX_ZIP_UPLOAD_BYTES = 200 * 1024 * 1024
 
 ALLOWED_EXTENSIONS = set(EXTENSION_MIME.keys()) | {".pdf"}
+ZIP_ONLY_EXTENSIONS = {".zip"}
 
 
 def _validate_extension(filename: str) -> str:
@@ -62,6 +65,12 @@ class LabUploadUrlRequestSerializer(serializers.Serializer):
     folder_id = serializers.UUIDField(required=False, allow_null=True)
 
     def validate(self, attrs):
+        ext = os.path.splitext(attrs["filename"])[1].lower()
+        if ext in ZIP_ONLY_EXTENSIONS:
+            if attrs["size_bytes"] > MAX_ZIP_UPLOAD_BYTES:
+                raise serializers.ValidationError("Zip archive exceeds 200 MB limit.")
+            attrs["mime_type"] = "application/zip"
+            return attrs
         _validate_extension(attrs["filename"])
         if attrs["size_bytes"] > MAX_UPLOAD_BYTES:
             raise serializers.ValidationError("File exceeds 50 MB limit.")
@@ -199,6 +208,56 @@ class LabRetrieveRequestSerializer(serializers.Serializer):
         child=serializers.UUIDField(),
         required=False,
     )
+
+
+class LabImportZipSerializer(serializers.Serializer):
+    file_key = serializers.CharField(max_length=1024)
+    original_filename = serializers.CharField(max_length=500)
+    size_bytes = serializers.IntegerField(min_value=1)
+    parent_folder_id = serializers.UUIDField(required=False, allow_null=True)
+    label = serializers.CharField(max_length=255, required=False, allow_blank=True)
+
+    def validate(self, attrs):
+        ext = os.path.splitext(attrs["original_filename"])[1].lower()
+        if ext != ".zip":
+            raise serializers.ValidationError("Only .zip archives are supported for import.")
+        if attrs["size_bytes"] > MAX_ZIP_UPLOAD_BYTES:
+            raise serializers.ValidationError("Zip archive exceeds 200 MB limit.")
+        return attrs
+
+
+class LabImportGitSerializer(serializers.Serializer):
+    url = serializers.URLField(max_length=2000)
+    branch = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    parent_folder_id = serializers.UUIDField(required=False, allow_null=True)
+    label = serializers.CharField(max_length=255, required=False, allow_blank=True)
+
+    def validate_url(self, value):
+        from apps.lab.importing.git_import import validate_git_url
+
+        return validate_git_url(value)
+
+
+class LabImportSerializer(serializers.ModelSerializer):
+    workspace_id = serializers.UUIDField(source="workspace.id", read_only=True)
+    root_folder_id = serializers.UUIDField(source="root_folder.id", allow_null=True, read_only=True)
+
+    class Meta:
+        model = LabImport
+        fields = (
+            "id",
+            "workspace_id",
+            "status",
+            "source_type",
+            "source_label",
+            "source_payload",
+            "root_folder_id",
+            "stats",
+            "error_message",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = fields
 
 
 class LabRetrievedChunkSerializer(serializers.Serializer):

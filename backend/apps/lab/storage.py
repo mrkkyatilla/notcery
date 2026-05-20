@@ -15,12 +15,25 @@ __all__ = [
     "download_file_bytes",
     "delete_file",
     "upload_text_content",
+    "upload_bytes",
 ]
 
 
 def build_lab_file_key(workspace_id: uuid.UUID, filename: str) -> str:
     safe_name = filename.replace("/", "_").strip() or "file"
     return f"workspaces/{workspace_id}/lab/{uuid.uuid4()}/{safe_name}"
+
+
+def upload_bytes(file_key: str, data: bytes, mime_type: str = "application/octet-stream") -> None:
+    client = _s3_client()
+    from django.conf import settings
+
+    client.put_object(
+        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+        Key=file_key,
+        Body=data,
+        ContentType=mime_type,
+    )
 
 
 def upload_text_content(file_key: str, content: str, mime_type: str = "text/plain") -> None:

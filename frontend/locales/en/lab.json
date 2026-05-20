@@ -20,6 +20,22 @@
     "binaryHint": "Preview is not available for this format. Download from Storj or open externally.",
     "download": "Download"
   },
+  "import": {
+    "title": "Import project",
+    "zip": "Upload zip archive",
+    "git": "Clone public Git repo",
+    "hideGit": "Hide Git form",
+    "gitUrl": "https://github.com/org/repo",
+    "gitBranch": "Branch (optional)",
+    "gitLabel": "Folder name (optional)",
+    "gitSubmit": "Clone and import",
+    "hint": "Zip or public Git (GitHub, GitLab, Bitbucket). Skips node_modules, .git, binaries.",
+    "started": "Import started — processing in background",
+    "completed": "Import completed",
+    "failed": "Import failed",
+    "progress": "Status: {{status}}",
+    "stats": "{{imported}} / {{total}} files ({{skipped}} skipped)"
+  },
   "layout": {
     "hideChat": "Hide agent panel",
     "showChat": "Show agent panel"
