@@ -1,6 +1,6 @@
 import json
 import logging
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from apps.core.request_context import request_id_ctx, user_id_ctx
 
@@ -10,7 +10,7 @@ class JsonLogFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         payload = {
-            "timestamp": datetime.now(UTC).isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),

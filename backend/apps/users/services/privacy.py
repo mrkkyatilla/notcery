@@ -1,5 +1,5 @@
 import logging
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from django.db import transaction
 
@@ -70,7 +70,7 @@ def export_user_data(user: User) -> dict:
         )
 
     return {
-        "exported_at": datetime.now(UTC).isoformat(),
+        "exported_at": datetime.now(timezone.utc).isoformat(),
         "user": {
             "id": str(user.id),
             "email": user.email,
