@@ -42,7 +42,7 @@ set -a
 [[ -f .env ]] && source .env
 set +a
 
-docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d
+"$APP_DIR/infra/deploy/compose.sh" up -d
 
 cd backend
 python3.12 -m venv .venv

@@ -15,7 +15,8 @@
 ```bash
 cd /var/www/notcery
 cp infra/deploy/env.production.example .env && nano .env
-docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d
+./infra/deploy/compose.sh up -d
+# Sunucuda genelde: docker-compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d
 ./infra/deploy/deploy.sh --local
 cp infra/deploy/nginx/notcery.conf /etc/nginx/sites-available/notcery
 ln -sf /etc/nginx/sites-available/notcery /etc/nginx/sites-enabled/

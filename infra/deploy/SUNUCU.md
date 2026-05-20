@@ -84,7 +84,7 @@ sudo systemctl disable postgresql   # isteğe bağlı, yeniden başlamasın
 **Seçenek B — Sistem Postgres’i kullan, Docker postgres’i başlatma:**
 
 ```bash
-docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d redis
+docker-compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d redis
 # DATABASE_URL mevcut sistem kullanıcı/şifre/port ile (genelde 5432)
 ```
 
@@ -92,18 +92,45 @@ Kontrol: `sudo ss -tlnp | grep 5432`
 
 ---
 
+## Sorun giderme: `address already in use` (6379 — Redis)
+
+**redis-server** servisi çoğu zaman `127.0.0.1:6379` kullanır. Prod overlay varsayılan host portu **6380**.
+
+`.env` (tüm Redis URL’leri aynı host portu):
+
+```env
+REDIS_HOST_PORT=6380
+REDIS_URL=redis://127.0.0.1:6380/0
+CELERY_BROKER_URL=redis://127.0.0.1:6380/1
+CELERY_RESULT_BACKEND=redis://127.0.0.1:6380/2
+```
+
+Alternatif: `sudo systemctl stop redis-server` → Docker’ı `6379` ile kullanabilirsiniz.
+
+Kontrol: `sudo ss -tlnp | grep 6379`
+
+---
+
 ## 3. Altyapı (Postgres, Redis)
 
 **Storj** kullanıyorsanız MinIO’yu başlatmayın. `.env` için: `env.production.storj.example` ve `env-aciklama.md`.
 
+Sunucuda çoğu Ubuntu kurulumunda **`docker compose` (boşluk) yok**, **`docker-compose` (tire)** kullanın:
+
 ```bash
 cd /var/www/notcery
-# Storj:
-docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d postgres redis
-# Yerel MinIO ile:
-# docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d
-docker compose -f infra/docker-compose.yml ps
+chmod +x infra/deploy/compose.sh
+
+# Storj (sadece postgres + redis):
+./infra/deploy/compose.sh up -d postgres redis
+
+# veya doğrudan:
+docker-compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d postgres redis
+
+docker-compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml ps
 ```
+
+`unknown shorthand flag: 'f' in -f` → `docker compose` yerine `docker-compose` veya `./infra/deploy/compose.sh` kullanın.
 
 ---
 

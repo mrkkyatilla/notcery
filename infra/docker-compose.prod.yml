@@ -12,7 +12,8 @@ services:
 
   redis:
     ports:
-      - "127.0.0.1:${REDIS_HOST_PORT:-6379}:6379"
+      # Ubuntu often has redis-server on :6379 — default host port 6380
+      - "127.0.0.1:${REDIS_HOST_PORT:-6380}:6379"
 
   minio:
     ports:

@@ -138,7 +138,8 @@ Boşken faturalama endpoint’leri çalışmaz veya test modunda kalır — MVP 
 Storj kullanırken stack:
 
 ```bash
-docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d postgres redis
+docker-compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d postgres redis
+# veya: ./infra/deploy/compose.sh up -d postgres redis
 ```
 
 (`minio` satırını çalıştırmayın — dosyada tüm servisler var; sadece postgres+redis yeterli.)

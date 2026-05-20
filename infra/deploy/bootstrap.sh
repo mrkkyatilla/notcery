@@ -46,7 +46,7 @@ fi
 
 # Docker infra (localhost-only ports)
 cd "$APP_DIR"
-docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d
+"$APP_DIR/infra/deploy/compose.sh" up -d
 
 install -m 644 "$APP_DIR/infra/deploy/nginx/notcery.conf" /etc/nginx/sites-available/notcery
 ln -sf /etc/nginx/sites-available/notcery /etc/nginx/sites-enabled/notcery
