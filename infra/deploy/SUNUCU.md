@@ -154,9 +154,15 @@ Sunucudaki **Node çok eski** (Ubuntu `apt install nodejs` → v12/v10). TypeScr
 ```bash
 node -v   # v18+ olmalı (tercihen v20/v22)
 
-apt-get remove -y nodejs npm
+# Çift NodeSource kaydı varsa önce temizle (Signed-By conflict):
+rm -f /etc/apt/sources.list.d/nodesource.list \
+  /etc/apt/sources.list.d/nodesource.sources \
+  /etc/apt/sources.list.d/nsolid.list
+# libnode-dev 12.x NodeSource 22 ile çakışır — önce purge:
+apt-get purge -y nodejs npm libnode-dev libnode72 nodejs-doc 2>/dev/null || true
+apt-get autoremove -y
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-apt-get install -y nodejs
+apt-get update && apt-get install -y nodejs
 node -v && npm -v
 
 cd /var/www/notcery/frontend

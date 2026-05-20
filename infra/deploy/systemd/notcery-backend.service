@@ -9,6 +9,7 @@ User=root
 WorkingDirectory=/var/www/notcery/backend
 EnvironmentFile=/var/www/notcery/.env
 Environment=DJANGO_SETTINGS_MODULE=config.settings.production
+Environment=STRUCTURED_LOGGING=false
 ExecStart=/var/www/notcery/backend/.venv/bin/gunicorn config.wsgi:application \
     --bind 127.0.0.1:8000 \
     --workers 2 \

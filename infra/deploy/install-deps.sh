@@ -21,8 +21,15 @@ need_node_upgrade() {
 
 if need_node_upgrade; then
   echo "Installing Node.js 22 (current: $(node -v 2>/dev/null || echo none))"
+  # Purge Ubuntu node 12.x (conflicts with NodeSource: libnode-dev, common.gypi, etc.)
   apt-get remove -y nodejs npm 2>/dev/null || true
+  apt-get purge -y nodejs npm libnode-dev libnode72 nodejs-doc 2>/dev/null || true
+  apt-get autoremove -y
+  rm -f /etc/apt/sources.list.d/nodesource.list \
+    /etc/apt/sources.list.d/nodesource.sources \
+    /etc/apt/sources.list.d/nsolid.list 2>/dev/null || true
   curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+  apt-get update
   apt-get install -y nodejs
 fi
 

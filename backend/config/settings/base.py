@@ -1,4 +1,5 @@
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -192,6 +193,9 @@ STRIPE_CHECKOUT_CANCEL_URL = os.environ.get(
 SENTRY_DSN = os.environ.get("SENTRY_DSN", "")
 SENTRY_ENVIRONMENT = os.environ.get("SENTRY_ENVIRONMENT", "development")
 STRUCTURED_LOGGING = os.environ.get("STRUCTURED_LOGGING", "false").lower() == "true"
+# Python 3.10 cannot load JsonLogFormatter when STRUCTURED_LOGGING was written for 3.11+ (datetime.UTC)
+if STRUCTURED_LOGGING and sys.version_info < (3, 11):
+    STRUCTURED_LOGGING = False
 
 LOGGING = {
     "version": 1,
