@@ -848,7 +848,8 @@ export const handlers = [
           source_type: noteId ? 'note' : 'document',
           note_id: noteId,
           document_id: noteId ? null : documents[0]?.id ?? null,
-          excerpt: 'Relevant excerpt from your indexed content (mock).',
+          label: noteId ? 'Mock note' : documents[0]?.original_filename ?? 'sample.pdf',
+          excerpt: '',
         },
       ],
     }

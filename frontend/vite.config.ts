@@ -18,7 +18,15 @@ export default defineConfig({
           if (id.includes('@tiptap') || id.includes('prosemirror') || id.includes('lowlight')) {
             return 'tiptap'
           }
-          if (id.includes('react-markdown') || id.includes('remark-gfm')) return 'markdown'
+          if (
+            id.includes('react-markdown') ||
+            id.includes('remark-gfm') ||
+            id.includes('remark-math') ||
+            id.includes('rehype-katex') ||
+            id.includes('katex')
+          ) {
+            return 'markdown'
+          }
           if (id.includes('node_modules')) return 'vendor'
         },
       },

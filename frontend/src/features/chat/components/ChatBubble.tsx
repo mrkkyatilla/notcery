@@ -56,9 +56,9 @@ export function ChatBubble({ message, workspaceId }: Props) {
         )}
 
         {!isUser && message.citations?.length ? (
-          <div className="mt-3 space-y-2 border-t pt-2">
+          <div className="mt-3 space-y-1.5 border-t pt-2">
             <p className="text-xs font-medium text-muted-foreground">{t('sources')}</p>
-            <div className="grid gap-2">
+            <div className="flex flex-col gap-1.5">
               {message.citations.map((citation, index) => (
                 <CitationCard
                   key={citation.chunk_id ?? `${index}-${citation.excerpt?.slice(0, 12)}`}

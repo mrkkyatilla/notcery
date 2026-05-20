@@ -1922,8 +1922,12 @@ components:
           type: string
           format: uuid
           nullable: true
+        label:
+          type: string
+          description: Human-readable source name (e.g. filename)
         excerpt:
           type: string
+          description: Optional snippet; often empty (UI shows label only)
 
     ChatMessageResponse:
       type: object

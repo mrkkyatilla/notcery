@@ -22,6 +22,7 @@
   "citation": {
     "document": "Document",
     "note": "Note",
-    "performance": "Performance"
+    "performance": "Performance",
+    "openLibrary": "Open in library"
   }
 }

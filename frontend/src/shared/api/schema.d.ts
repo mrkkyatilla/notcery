@@ -1074,6 +1074,9 @@ export interface components {
             document_id?: string | null;
             /** Format: uuid */
             note_id?: string | null;
+            /** Human-readable source name (e.g. filename) */
+            label?: string;
+            /** Optional snippet; often empty (UI shows label only) */
             excerpt?: string;
         };
         ChatMessageResponse: {
