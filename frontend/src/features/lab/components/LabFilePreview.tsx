@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { MarkdownMessage } from '@/features/chat/components/MarkdownMessage'
@@ -60,8 +60,8 @@ function ImagePreview({ fileId, alt }: { fileId: string; alt: string }) {
   if (error) return <p className="p-4 text-sm text-destructive">{error}</p>
   if (!src) return <Skeleton className="m-4 h-48 w-full" />
   return (
-    <div className="flex justify-center overflow-auto p-4">
-      <img src={src} alt={alt} className="max-h-[70vh] max-w-full object-contain" />
+    <div className="flex justify-center p-4">
+      <img src={src} alt={alt} className="max-w-full object-contain" />
     </div>
   )
 }
@@ -72,13 +72,19 @@ export function LabFilePreview({ file }: Props) {
   const isMarkdown = /\.(md|markdown)$/i.test(file.name)
   const isCsv = /\.csv$/i.test(file.name)
 
+  const scrollWrap = (body: ReactElement) => (
+    <div className="h-full min-h-0 overflow-y-auto overflow-x-auto overscroll-contain">
+      {body}
+    </div>
+  )
+
   if (contentQuery.isLoading) {
-    return <Skeleton className="m-4 h-32 w-full" />
+    return scrollWrap(<Skeleton className="m-4 h-32 w-full" />)
   }
 
   if (contentQuery.isError || !contentQuery.data) {
-    return (
-      <div className="p-4 text-sm text-muted-foreground">{t('viewer.notReadable')}</div>
+    return scrollWrap(
+      <div className="p-4 text-sm text-muted-foreground">{t('viewer.notReadable')}</div>,
     )
   }
 
@@ -86,16 +92,16 @@ export function LabFilePreview({ file }: Props) {
   const downloadUrl = data.download_url
 
   if (data.preview_kind === 'pdf') {
-    return <PdfPreview fileId={file.id} />
+    return scrollWrap(<PdfPreview fileId={file.id} />)
   }
 
   if (data.preview_kind === 'image') {
-    return <ImagePreview fileId={file.id} alt={file.name} />
+    return scrollWrap(<ImagePreview fileId={file.id} alt={file.name} />)
   }
 
   if (data.preview_kind === 'binary') {
-    return (
-      <div className="flex flex-col items-center justify-center gap-3 p-8 text-center text-sm text-muted-foreground">
+    return scrollWrap(
+      <div className="flex min-h-full flex-col items-center justify-center gap-3 p-8 text-center text-sm text-muted-foreground">
         <p>{t('viewer.binaryHint')}</p>
         {downloadUrl ? (
           <Button variant="outline" size="sm" asChild>
@@ -104,31 +110,31 @@ export function LabFilePreview({ file }: Props) {
             </a>
           </Button>
         ) : null}
-      </div>
+      </div>,
     )
   }
 
   const content = data.content ?? ''
 
   if (isMarkdown) {
-    return (
-      <div className="overflow-auto p-4">
+    return scrollWrap(
+      <div className="p-4">
         <MarkdownMessage content={content} />
-      </div>
+      </div>,
     )
   }
 
   if (isCsv) {
-    return (
-      <div className="overflow-auto p-3">
+    return scrollWrap(
+      <div className="p-3">
         <CsvTable content={content} />
-      </div>
+      </div>,
     )
   }
 
-  return (
-    <div className="overflow-auto p-3">
+  return scrollWrap(
+    <div className="p-3">
       <CodePreview filename={file.name} content={content} />
-    </div>
+    </div>,
   )
 }

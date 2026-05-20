@@ -19,6 +19,7 @@ import {
   loadLabSession,
   saveLabSession,
 } from '@/features/lab/lab-session-storage'
+import { guessLabMimeFromFile } from '@/features/lab/guess-mime'
 import { uploadToPresignedUrl } from '@/features/library/upload-to-presigned'
 import type {
   LabFileCreate,
@@ -119,24 +120,31 @@ export function useCreateLabFolder(workspaceId: string | null) {
   })
 }
 
-export function useUploadLabFile(workspaceId: string | null, folderId?: string | null) {
+export type LabUploadInput = File | { file: File; folderId?: string | null }
+
+export function useUploadLabFile(workspaceId: string | null, defaultFolderId?: string | null) {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: async (file: File) => {
+    mutationFn: async (input: LabUploadInput) => {
+      const file = input instanceof File ? input : input.file
+      const targetFolderId =
+        input instanceof File ? defaultFolderId : (input.folderId ?? defaultFolderId)
+      const mimeType = guessLabMimeFromFile(file)
       const uploadReq: UploadUrlRequest = {
         filename: file.name,
-        mime_type: file.type || 'application/octet-stream',
+        mime_type: mimeType,
         size_bytes: file.size,
-        folder_id: folderId ?? undefined,
+        folder_id: targetFolderId ?? undefined,
       }
       const presign = await createLabUploadUrl(workspaceId!, uploadReq)
-      await uploadToPresignedUrl(presign.upload_url, file, file.type || 'application/octet-stream')
+      const putMime = presign.mime_type ?? mimeType
+      await uploadToPresignedUrl(presign.upload_url, file, putMime)
       const createBody: LabFileCreate = {
         file_key: presign.file_key,
         original_filename: file.name,
-        mime_type: file.type || 'application/octet-stream',
+        mime_type: putMime,
         size_bytes: file.size,
-        folder_id: folderId ?? undefined,
+        folder_id: targetFolderId ?? undefined,
       }
       return registerLabFile(workspaceId!, createBody)
     },
@@ -172,6 +180,27 @@ export function useUpdateLabFile(workspaceId: string | null) {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['lab-files', workspaceId] })
       void qc.invalidateQueries({ queryKey: labFoldersKey(workspaceId ?? '') })
+    },
+    onError: showApiError,
+  })
+}
+
+export function useMoveLabFiles(workspaceId: string | null) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({
+      fileIds,
+      folderId,
+    }: {
+      fileIds: string[]
+      folderId: string
+    }) => {
+      await Promise.all(
+        fileIds.map((fileId) => updateLabFile(fileId, { folder_id: folderId })),
+      )
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['lab-files', workspaceId] })
     },
     onError: showApiError,
   })

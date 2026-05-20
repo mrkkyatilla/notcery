@@ -51,22 +51,23 @@ export function LabAgentChat({ workspaceId, focusedFileIds, onOpenFile }: Props)
   }
 
   return (
-    <div className="flex h-full min-w-0 flex-col">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2">
+    <div className="flex h-full min-h-0 min-w-0 flex-col text-[#cccccc]">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-[#3c3c3c] px-3 py-2">
         <div>
-          <h2 className="font-semibold">{t('chat.title')}</h2>
+          <h2 className="text-sm font-semibold">{t('chat.title')}</h2>
           {sessionId ? (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[10px] text-[#858585]">
               {t('chat.session', { id: sessionId.slice(0, 8) })}
             </p>
           ) : (
-            <Skeleton className="mt-1 h-3 w-24" />
+            <Skeleton className="mt-1 h-3 w-24 bg-[#3c3c3c]" />
           )}
         </div>
         <Button
           type="button"
           variant="outline"
           size="sm"
+          className="h-7 border-[#3c3c3c] bg-transparent text-xs hover:bg-[#2a2d2e]"
           disabled={resetMutation.isPending}
           onClick={() => resetMutation.mutate()}
         >
@@ -74,7 +75,7 @@ export function LabAgentChat({ workspaceId, focusedFileIds, onOpenFile }: Props)
         </Button>
       </div>
 
-      <div className="flex flex-wrap gap-3 border-b px-3 py-2 text-xs">
+      <div className="flex shrink-0 flex-wrap gap-3 border-b border-[#3c3c3c] px-3 py-2 text-xs">
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
@@ -97,24 +98,24 @@ export function LabAgentChat({ workspaceId, focusedFileIds, onOpenFile }: Props)
           </Select>
         </div>
         {focusedFileIds.length ? (
-          <span className="text-muted-foreground">
+          <span className="text-[#858585]">
             {t('chat.focusCount', { count: focusedFileIds.length })}
           </span>
         ) : null}
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto p-3">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-3">
         {!messagesQuery.data?.length ? (
-          <p className="text-sm text-muted-foreground">{t('chat.empty')}</p>
+          <p className="text-sm text-[#858585]">{t('chat.empty')}</p>
         ) : (
           messagesQuery.data.map((msg) => (
             <div
               key={msg.id}
               className={cn(
-                'max-w-[95%] rounded-2xl px-3 py-2 text-sm',
+                'max-w-[95%] rounded-lg px-3 py-2 text-sm',
                 msg.role === 'user'
-                  ? 'ml-auto bg-primary text-primary-foreground'
-                  : 'border bg-card',
+                  ? 'ml-auto bg-[#007acc] text-white'
+                  : 'border border-[#3c3c3c] bg-[#1e1e1e]',
               )}
             >
               {msg.role === 'user' ? (
@@ -128,7 +129,7 @@ export function LabAgentChat({ workspaceId, focusedFileIds, onOpenFile }: Props)
                   />
                   {msg.citations?.length ? (
                     <div className="mt-2 space-y-1 border-t pt-2">
-                      <p className="text-xs font-medium text-muted-foreground">
+                      <p className="text-xs font-medium text-[#858585]">
                         {t('chat.sources')}
                       </p>
                       {msg.citations.map((c, i) => (
@@ -146,15 +147,16 @@ export function LabAgentChat({ workspaceId, focusedFileIds, onOpenFile }: Props)
           ))
         )}
         {sendMutation.isPending ? (
-          <p className="text-xs text-muted-foreground">{t('chat.thinking')}</p>
+          <p className="text-xs text-[#858585]">{t('chat.thinking')}</p>
         ) : null}
       </div>
 
-      <div className="flex gap-2 border-t p-3">
+      <div className="flex shrink-0 gap-2 border-t border-[#3c3c3c] p-3">
         <Input
           value={input}
           placeholder={t('chat.placeholder')}
           disabled={!sessionId || sendMutation.isPending}
+          className="border-[#3c3c3c] bg-[#3c3c3c] text-[#cccccc]"
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -165,6 +167,7 @@ export function LabAgentChat({ workspaceId, focusedFileIds, onOpenFile }: Props)
         />
         <Button
           type="button"
+          className="shrink-0 bg-[#007acc] hover:bg-[#0062a3]"
           disabled={!sessionId || sendMutation.isPending || !input.trim()}
           onClick={handleSend}
         >

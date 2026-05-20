@@ -187,7 +187,12 @@ class LabFileUploadUrlView(APIView):
         )
         return Response(
             LabUploadUrlResponseSerializer(
-                {"upload_url": upload_url, "file_key": file_key, "expires_in": expires}
+                {
+                    "upload_url": upload_url,
+                    "file_key": file_key,
+                    "expires_in": expires,
+                    "mime_type": data["mime_type"],
+                }
             ).data
         )
 

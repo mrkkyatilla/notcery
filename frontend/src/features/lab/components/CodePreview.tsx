@@ -26,9 +26,9 @@ export function CodePreview({ filename, content }: Props) {
   }, [filename, content])
 
   return (
-    <pre className="hljs overflow-auto rounded-md bg-[#1e1e1e] p-3 text-xs leading-relaxed">
+    <pre className="hljs rounded-md bg-[#1e1e1e] p-3 text-xs leading-relaxed">
       <code
-        className="hljs block font-mono"
+        className="hljs block font-mono whitespace-pre"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </pre>

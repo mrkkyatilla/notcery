@@ -2401,6 +2401,9 @@ components:
           type: string
         expires_in:
           type: integer
+        mime_type:
+          type: string
+          description: Content-Type signed for the presigned PUT (must match upload header)
 
     LabFileCreate:
       type: object

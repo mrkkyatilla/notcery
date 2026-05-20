@@ -10,7 +10,9 @@
     "moveTo": "Move file to",
     "pickFolder": "Choose folder",
     "cancel": "Cancel",
-    "moveSelected": "Move selected file…"
+    "moveSelected": "Move selected file…",
+    "dndHint": "Drag files onto folders. Ctrl/Cmd+click or Shift+click to multi-select. Drop from desktop to upload.",
+    "selectedCount": "{{count}} selected"
   },
   "viewer": {
     "empty": "Select a file to preview",

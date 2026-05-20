@@ -73,6 +73,7 @@ class LabUploadUrlResponseSerializer(serializers.Serializer):
     upload_url = serializers.URLField()
     file_key = serializers.CharField()
     expires_in = serializers.IntegerField()
+    mime_type = serializers.CharField()
 
 
 class LabFileCreateSerializer(serializers.Serializer):

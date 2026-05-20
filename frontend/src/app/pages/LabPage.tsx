@@ -1,12 +1,10 @@
 import { X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Navigate, useParams } from 'react-router-dom'
 
-import { ArtifactPanel } from '@/features/lab/components/ArtifactPanel'
 import { FileTree } from '@/features/lab/components/FileTree'
 import { FileViewer } from '@/features/lab/components/FileViewer'
-import { LabAgentChat } from '@/features/lab/components/LabAgentChat'
+import { LabAgentSidebar } from '@/features/lab/components/LabAgentSidebar'
 import { fileIconColorClass } from '@/features/lab/file-icon-colors'
 import { labFileIcon } from '@/features/lab/file-icons'
 import { listLabFiles } from '@/features/lab/lab-api'
@@ -15,16 +13,16 @@ import { useWorkspaceStore } from '@/features/workspace/workspace-store'
 import { cn } from '@/shared/lib/utils'
 
 export function LabPage() {
-  const { t } = useTranslation('lab')
   const { workspaceId, fileId: routeFileId } = useParams<{
     workspaceId: string
     fileId?: string
   }>()
   const setActiveWorkspaceId = useWorkspaceStore((s) => s.setActiveWorkspaceId)
   const [selectedFile, setSelectedFile] = useState<LabFile | null>(null)
+  const [selectedFileIds, setSelectedFileIds] = useState<string[]>([])
+  const [selectionAnchorId, setSelectionAnchorId] = useState<string | null>(null)
   const [openTabs, setOpenTabs] = useState<LabFile[]>([])
   const [focusedFileIds, setFocusedFileIds] = useState<string[]>([])
-  const [showChat, setShowChat] = useState(true)
 
   useEffect(() => {
     if (workspaceId) setActiveWorkspaceId(workspaceId)
@@ -32,10 +30,17 @@ export function LabPage() {
 
   const openFile = useCallback((file: LabFile) => {
     setSelectedFile(file)
+    setSelectedFileIds([file.id])
+    setSelectionAnchorId(file.id)
     setOpenTabs((prev) => {
       if (prev.some((f) => f.id === file.id)) return prev
       return [...prev, file]
     })
+  }, [])
+
+  const handleSelectionChange = useCallback((ids: string[], anchorId: string) => {
+    setSelectedFileIds(ids)
+    setSelectionAnchorId(anchorId)
   }, [])
 
   useEffect(() => {
@@ -78,15 +83,18 @@ export function LabPage() {
   }
 
   return (
-    <div className="grid h-full grid-cols-1 bg-[#1e1e1e] lg:grid-cols-[260px_minmax(0,1fr)_220px]">
+    <div className="flex h-full min-h-0 overflow-hidden bg-[#1e1e1e]">
       <FileTree
         workspaceId={workspaceId}
-        selectedFileId={selectedFile?.id ?? null}
+        selectedFileIds={selectedFileIds}
+        primaryFileId={selectedFile?.id ?? null}
+        selectionAnchorId={selectionAnchorId}
+        onSelectionChange={handleSelectionChange}
+        onOpenFile={openFile}
         focusedFileIds={focusedFileIds}
-        onSelectFile={openFile}
         onToggleFocus={toggleFocus}
       />
-      <div className="flex min-w-0 flex-col border-x border-[#3c3c3c]">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col border-x border-[#3c3c3c]">
         {openTabs.length > 0 ? (
           <div className="flex shrink-0 overflow-x-auto border-b border-[#252526] bg-[#2d2d2d]">
             {openTabs.map((tab) => (
@@ -126,39 +134,16 @@ export function LabPage() {
             ))}
           </div>
         ) : null}
-        <div
-          className={cn(
-            'grid min-h-0 flex-1',
-            selectedFile && showChat ? 'grid-rows-[minmax(200px,1fr)_minmax(180px,40%)]' : 'grid-rows-1',
-          )}
-        >
-          <div className="min-h-0 overflow-hidden">
-            <FileViewer file={selectedFile} />
-          </div>
-          {showChat ? (
-            <div className="min-h-0 border-t border-[#3c3c3c]">
-              <LabAgentChat
-                workspaceId={workspaceId}
-                focusedFileIds={focusedFileIds}
-                onOpenFile={handleOpenFileId}
-              />
-            </div>
-          ) : null}
-        </div>
-        <div className="flex shrink-0 items-center justify-end gap-2 border-t border-[#3c3c3c] bg-[#252526] px-2 py-1">
-          <button
-            type="button"
-            className="text-[11px] text-[#858585] hover:text-[#cccccc]"
-            onClick={() => setShowChat((v) => !v)}
-          >
-            {showChat ? t('layout.hideChat') : t('layout.showChat')}
-          </button>
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <FileViewer file={selectedFile} />
         </div>
       </div>
-      <ArtifactPanel
+      <LabAgentSidebar
         workspaceId={workspaceId}
+        focusedFileIds={focusedFileIds}
         selectedFileId={selectedFile?.id ?? null}
-        onSelectFile={openFile}
+        onOpenFile={openFile}
+        onOpenFileId={handleOpenFileId}
       />
     </div>
   )

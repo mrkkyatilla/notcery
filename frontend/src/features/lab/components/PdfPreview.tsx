@@ -80,7 +80,7 @@ export function PdfPreview({ fileId }: Props) {
   return (
     <div
       ref={containerRef}
-      className="flex flex-col items-center overflow-auto bg-[#525659] p-4"
+      className="flex min-h-min flex-col items-center bg-[#525659] p-4"
     />
   )
 }

@@ -28,7 +28,7 @@ export function FileViewer({ file }: Props) {
   const downloadUrl = contentQuery.data?.download_url
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[#1e1e1e] text-[#cccccc]">
+    <div className="flex h-full min-h-0 flex-col bg-[#1e1e1e] text-[#cccccc]">
       <div className="flex shrink-0 items-center gap-2 border-b border-[#3c3c3c] bg-[#252526] px-3 py-1.5">
         <span className={cn(fileIconColorClass(file.name))}>{labFileIcon(file.name)}</span>
         <span className="min-w-0 flex-1 truncate text-sm">{file.name}</span>
@@ -44,7 +44,7 @@ export function FileViewer({ file }: Props) {
           </Button>
         ) : null}
       </div>
-      <div className="min-h-0 flex-1 overflow-hidden">
+      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
         <LabFilePreview file={file} />
       </div>
     </div>

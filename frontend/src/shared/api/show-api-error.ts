@@ -5,7 +5,8 @@ import i18n from '@/shared/i18n'
 
 export function showApiError(error: unknown): void {
   if (!(error instanceof ApiError)) {
-    toast.error(i18n.t('errors:UNKNOWN.message'))
+    const message = error instanceof Error ? error.message : ''
+    toast.error(message.trim() || i18n.t('errors:UNKNOWN.message'))
     return
   }
 

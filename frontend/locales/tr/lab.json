@@ -10,7 +10,9 @@
     "moveTo": "Dosyayı taşı",
     "pickFolder": "Klasör seç",
     "cancel": "İptal",
-    "moveSelected": "Seçili dosyayı taşı…"
+    "moveSelected": "Seçili dosyayı taşı…",
+    "dndHint": "Dosyaları klasörlerin üzerine sürükleyin. Çoklu seçim: Ctrl/Cmd veya Shift+tık. Masaüstünden bırakınca yüklenir.",
+    "selectedCount": "{{count}} seçili"
   },
   "viewer": {
     "empty": "Önizleme için dosya seçin",

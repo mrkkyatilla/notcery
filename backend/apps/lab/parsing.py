@@ -71,7 +71,12 @@ def guess_mime_from_name(filename: str, declared_mime: str) -> str:
     ext = os.path.splitext(filename)[1].lower()
     if ext in EXTENSION_MIME:
         return EXTENSION_MIME[ext]
-    if declared_mime and declared_mime != "application/octet-stream":
+    # Browsers often mis-detect code (e.g. .ts/.tsx → video/mp2t).
+    if declared_mime and declared_mime not in (
+        "application/octet-stream",
+        "video/mp2t",
+        "video/vnd.dlna.mpeg-tts",
+    ):
         return declared_mime
     return "text/plain"
 

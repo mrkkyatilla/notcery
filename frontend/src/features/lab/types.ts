@@ -81,6 +81,7 @@ export type UploadUrlResponse = {
   upload_url: string
   file_key: string
   expires_in: number
+  mime_type?: string
 }
 
 export type LabFileCreate = {
