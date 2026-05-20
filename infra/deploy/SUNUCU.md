@@ -147,6 +147,26 @@ docker-compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml ps
 
 ---
 
+## Frontend build: `SyntaxError: Unexpected token '?'`
+
+Sunucudaki **Node çok eski** (Ubuntu `apt install nodejs` → v12/v10). TypeScript/Vite için **Node 18+** gerekir.
+
+```bash
+node -v   # v18+ olmalı (tercihen v20/v22)
+
+apt-get remove -y nodejs npm
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt-get install -y nodejs
+node -v && npm -v
+
+cd /var/www/notcery/frontend
+rm -rf node_modules
+npm ci   # veya npm install
+npm run build
+```
+
+---
+
 ## 4. Backend
 
 ```bash

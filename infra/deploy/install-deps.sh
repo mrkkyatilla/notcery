@@ -11,8 +11,17 @@ apt-get install -y \
   python3 python3-venv python3-pip \
   docker.io docker-compose
 
-# Node.js 22 (frontend build)
-if ! command -v npm >/dev/null 2>&1; then
+# Node.js 20+ required (Vite/TypeScript use ?? and modern syntax in tooling)
+need_node_upgrade() {
+  if ! command -v node >/dev/null 2>&1; then
+    return 0
+  fi
+  node -e 'const v=process.versions.node.split(".").map(Number); process.exit(v[0]<18?0:1)' 2>/dev/null
+}
+
+if need_node_upgrade; then
+  echo "Installing Node.js 22 (current: $(node -v 2>/dev/null || echo none))"
+  apt-get remove -y nodejs npm 2>/dev/null || true
   curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
   apt-get install -y nodejs
 fi
