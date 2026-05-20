@@ -5,12 +5,14 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
+COMPOSE_FILES=(-f infra/docker-compose.yml -f infra/docker-compose.prod.yml)
+
 if docker compose version &>/dev/null 2>&1; then
-  exec docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml "$@"
+  exec docker compose "${COMPOSE_FILES[@]}" "$@"
 fi
 
 if command -v docker-compose &>/dev/null; then
-  exec docker-compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml "$@"
+  exec docker-compose "${COMPOSE_FILES[@]}" "$@"
 fi
 
 echo "Neither 'docker compose' nor 'docker-compose' found. Install one of:" >&2

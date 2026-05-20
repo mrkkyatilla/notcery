@@ -45,7 +45,7 @@ set +a
 "$APP_DIR/infra/deploy/compose.sh" up -d
 
 cd backend
-python3.12 -m venv .venv
+python3 -m venv .venv
 .venv/bin/pip install -q -U pip
 .venv/bin/pip install -q -r requirements/prod.txt
 .venv/bin/python manage.py migrate --noinput

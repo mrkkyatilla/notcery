@@ -8,23 +8,36 @@ Cloudflare DNS hazırsa aşağıdaki sırayı sunucuda (`root`) uygulayın.
 
 ---
 
-## 0. Paketler (ilk kez)
+## Önemli: komutlar nerede çalışır?
+
+| Ortam | Dizin | Kim |
+|--------|--------|-----|
+| **Sunucu** | `/var/www/notcery` | `root` (veya `sudo`) |
+| Lokal PC | `/home/.../Documents/notcery` | geliştirme only |
+
+`staticfiles` yolu `/home/hanslanda/Documents/notcery/...` ise komutları **yanlışlıkla lokalde** çalıştırmışsınızdır. Production kurulumu **sadece sunucuda** `root@server-ngf2n0:/var/www/notcery`.
+
+Sunucuda repo eksikse:
 
 ```bash
-apt update
-apt install -y git nginx certbot python3-certbot-nginx \
-  python3.12 python3.12-venv docker.io docker-compose-v2 \
-  curl
+ls /var/www/notcery/frontend /var/www/notcery/infra/deploy
+cd /var/www/notcery && git pull
 ```
 
-Docker resmi sürümü isterseniz: `infra/deploy/bootstrap.sh` (sadece Docker kurulumu için de çalışır).
+---
 
-Node 22:
+## 0. Paketler (ilk kez — sunucuda mutlaka)
+
+`python3.12`, `npm`, `nginx` yoksa backend/frontend kurulmaz.
 
 ```bash
-curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-apt install -y nodejs
+cd /var/www/notcery
+chmod +x infra/deploy/*.sh
+./infra/deploy/install-deps.sh
+./infra/deploy/setup-app.sh
 ```
+
+Elle kurulum yerine bu iki script sırayı uygular.
 
 ---
 
