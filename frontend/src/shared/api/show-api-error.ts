@@ -58,9 +58,15 @@ export function showApiError(error: unknown): void {
     return
   }
 
+  // Backend often sends a specific message (e.g. Gemini failure) with VALIDATION_ERROR
+  if (error.code === 'VALIDATION_ERROR' && error.message?.trim()) {
+    toast.error(error.message)
+    return
+  }
+
   const translated = i18n.t(`${error.code}.message`, {
     ns: 'errors',
-    defaultValue: '',
+    defaultValue: error.message,
   })
 
   toast.error(translated || error.message)

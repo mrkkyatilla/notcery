@@ -86,6 +86,45 @@ Google Console’da `https://note.wrupup.com` origin/redirect ekli olmalı.
 
 ---
 
+## AI sohbet + kütüphane “bekliyor”
+
+| Belirti | Neden |
+|---------|--------|
+| Dosya **pending/processing** | **Celery worker** çalışmıyor veya indeks görevi hata veriyor (`systemctl status notcery-celery`) |
+| Sohbet **“Girdiğiniz bilgileri kontrol edin”** | API `VALIDATION_ERROR` döner; çoğunlukla **Gemini** (`GEMINI_API_KEY`, model adı, kota). Eski UI genel metni gösterirdi. |
+
+`.env` (üretim):
+
+```env
+GEMINI_API_KEY=<Google AI Studio API key>
+AI_BACKEND=auto
+INDEXER_EMBEDDING_BACKEND=auto
+GEMINI_CHAT_MODEL=models/gemini-2.0-flash
+GEMINI_EMBEDDING_MODEL=models/text-embedding-004
+```
+
+Sunucuda test:
+
+```bash
+cd /var/www/notcery/backend
+set -a && source /var/www/notcery/.env && set +a
+export DJANGO_SETTINGS_MODULE=config.settings.production
+.venv/bin/python -c "
+import django; django.setup()
+from apps.ai.services.gemini import generate_text
+print(generate_text('You are a helpful assistant.', 'Merhaba')[:200])
+"
+```
+
+Celery:
+
+```bash
+systemctl enable --now notcery-celery
+journalctl -u notcery-celery -n 30 --no-pager
+```
+
+---
+
 ## AI / indeksleme
 
 | Değişken | Boşsa / `mock` | `auto` + API key |
