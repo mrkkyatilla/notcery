@@ -26,18 +26,19 @@ cd /var/www/notcery && git pull
 
 ---
 
-## 0. Paketler (ilk kez — sunucuda mutlaka)
-
-`python3.12`, `npm`, `nginx` yoksa backend/frontend kurulmaz.
+## 0. Tek komut kurulum (önerilen)
 
 ```bash
 cd /var/www/notcery
+git pull
+cp infra/deploy/env.production.storj.example .env && nano .env
 chmod +x infra/deploy/*.sh
-./infra/deploy/install-deps.sh
-./infra/deploy/setup-app.sh
+./infra/deploy/install-production.sh
 ```
 
-Elle kurulum yerine bu iki script sırayı uygular.
+Detay: [`KURULUM.md`](KURULUM.md) — `install-deps` + `setup-app` + kontroller tek scriptte.
+
+Elle adım adım devam etmek isterseniz aşağıdaki bölümler geçerli.
 
 ---
 

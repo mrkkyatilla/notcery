@@ -170,6 +170,8 @@ AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "us-east-1")
 INDEXER_EMBEDDING_BACKEND = os.environ.get("INDEXER_EMBEDDING_BACKEND", "auto")
 INDEXER_MIN_SIMILARITY = float(os.environ.get("INDEXER_MIN_SIMILARITY", "0.35"))
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+# Optional: HTTP(S) proxy for Gemini only (e.g. http://user:pass@host:port). Not used for Storj/S3.
+GEMINI_HTTP_PROXY = os.environ.get("GEMINI_HTTP_PROXY", "")
 GEMINI_EMBEDDING_MODEL = os.environ.get("GEMINI_EMBEDDING_MODEL", "models/text-embedding-004")
 
 # AI orchestration (Faz 5)

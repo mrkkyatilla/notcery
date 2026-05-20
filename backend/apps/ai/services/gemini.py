@@ -5,6 +5,8 @@ from typing import Any
 
 from django.conf import settings
 
+from apps.core.gemini_proxy import gemini_http_proxy
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT_SECONDS = 60
@@ -49,10 +51,11 @@ def generate_json(
     for attempt in range(max_retries):
         try:
             started = time.monotonic()
-            response = model.generate_content(
-                prompt,
-                request_options={"timeout": DEFAULT_TIMEOUT_SECONDS},
-            )
+            with gemini_http_proxy():
+                response = model.generate_content(
+                    prompt,
+                    request_options={"timeout": DEFAULT_TIMEOUT_SECONDS},
+                )
             elapsed_ms = int((time.monotonic() - started) * 1000)
             text = (response.text or "").strip()
             logger.info("Gemini JSON call model=%s ms=%s chars=%s", model_id, elapsed_ms, len(text))
@@ -88,10 +91,11 @@ def generate_text(
     for attempt in range(max_retries):
         try:
             started = time.monotonic()
-            response = model.generate_content(
-                prompt,
-                request_options={"timeout": DEFAULT_TIMEOUT_SECONDS},
-            )
+            with gemini_http_proxy():
+                response = model.generate_content(
+                    prompt,
+                    request_options={"timeout": DEFAULT_TIMEOUT_SECONDS},
+                )
             elapsed_ms = int((time.monotonic() - started) * 1000)
             text = (response.text or "").strip()
             logger.info("Gemini chat model=%s ms=%s chars=%s", model_id, elapsed_ms, len(text))

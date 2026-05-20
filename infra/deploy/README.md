@@ -2,26 +2,31 @@
 
 | | |
 |--|--|
-| Sunucu | `31.57.108.145` |
 | Repo path | `/var/www/notcery` |
-| Frontend | `/var/www/notcery/frontend/dist` (after `npm run build`) |
 | GitHub | `https://github.com/mrkkyatilla/notcery.git` |
 
-**Türkçe adım adım:** [`SUNUCU.md`](SUNUCU.md)  
-**Cloudflare:** [`cloudflare.md`](cloudflare.md)
+## Tek komut kurulum
 
-## Quick path (repo already in `/var/www/notcery`)
+**[`KURULUM.md`](KURULUM.md)** (Türkçe)
 
 ```bash
-cd /var/www/notcery
-cp infra/deploy/env.production.example .env && nano .env
-./infra/deploy/compose.sh up -d
-# Sunucuda genelde: docker-compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d
-./infra/deploy/deploy.sh --local
-cp infra/deploy/nginx/notcery.conf /etc/nginx/sites-available/notcery
-ln -sf /etc/nginx/sites-available/notcery /etc/nginx/sites-enabled/
-nginx -t && systemctl reload nginx
-certbot --nginx -d note.wrupup.com --agree-tos -m you@wrupup.com
+cd /var/www/notcery && git pull
+cp infra/deploy/env.production.storj.example .env && nano .env
+chmod +x infra/deploy/*.sh
+./infra/deploy/install-production.sh
 ```
 
-Cloudflare SSL mode: **Full (strict)** after certbot.
+## Diğer rehberler
+
+| Dosya | İçerik |
+|--------|--------|
+| [`SUNUCU.md`](SUNUCU.md) | Manuel adımlar |
+| [`env-aciklama.md`](env-aciklama.md) | `.env` |
+| [`gemini-proxy.md`](gemini-proxy.md) | Gemini + proxy |
+| [`cloudflare.md`](cloudflare.md) | DNS / SSL |
+
+## Güncelleme
+
+```bash
+./infra/deploy/deploy.sh --local
+```

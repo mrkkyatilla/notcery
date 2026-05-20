@@ -104,6 +104,52 @@ GEMINI_PLAN_MODEL=models/gemini-2.5-flash
 GEMINI_EMBEDDING_MODEL=models/text-embedding-004
 ```
 
+### `User location is not supported for the API use`
+
+Google **AI Studio** API (`GEMINI_API_KEY`) sunucunun **çıkış IP** ülkesine bakar; VPS ülkesi destek listesinde değilse (bazı TR / bölgesel IP’ler dahil) **400** verir. Bu kod hatası değil.
+
+Sunucu ülkesini kontrol:
+
+```bash
+curl -s https://ipinfo.io/country
+# veya: curl -s https://ifconfig.co/country-iso
+```
+
+**Seçenekler:**
+
+| Seçenek | Açıklama |
+|---------|----------|
+| **A — Geçici mock** | `.env`: `AI_BACKEND=mock`, `INDEXER_EMBEDDING_BACKEND=mock` → sohbet/plan sahte; RAG/indeks sınırlı |
+| **B — IPv6 öncelik** | Datacenter IPv4 engelli; IPv6 açıksa `gai.conf` ile deneyin (aşağıda) |
+| **C — VPS / proxy** | Farklı çıkış IP veya HTTP proxy |
+| **D — Vertex AI** | GCP projesi + destekli `location` (kodda şu an yok) |
+| **E — `GEMINI_HTTP_PROXY`** | Sadece Gemini trafiği proxy’den (Storj etkilenmez) — **`infra/deploy/gemini-proxy.md`** |
+
+**IPv6 denemesi (sunucuda):**
+
+```bash
+# IPv6 çıkış var mı?
+curl -6 -s --max-time 5 https://generativelanguage.googleapis.com/ | head -1
+curl -6 -s https://ifconfig.co/ip
+
+# Sistemde IPv6'yı DNS çözümünde öne al
+grep -q '^precedence ::/0' /etc/gai.conf 2>/dev/null || \
+  echo 'precedence ::/0  100' >> /etc/gai.conf
+
+systemctl restart notcery-backend notcery-celery
+
+cd /var/www/notcery/backend
+set -a && source /var/www/notcery/.env && set +a
+export DJANGO_SETTINGS_MODULE=config.settings.production
+.venv/bin/python -c "
+import django; django.setup()
+from apps.ai.services.gemini import generate_text
+print(generate_text('You are helpful.', 'Test')[:150])
+"
+```
+
+Destekli bölgeler: [ai.google.dev/available_regions](https://ai.google.dev/available_regions)
+
 Sunucuda test:
 
 ```bash

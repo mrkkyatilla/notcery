@@ -3,6 +3,7 @@ import math
 import os
 from abc import ABC, abstractmethod
 
+from apps.core.gemini_proxy import gemini_http_proxy
 from apps.indexer.models import EMBEDDING_DIMENSIONS
 
 
@@ -39,11 +40,12 @@ class GeminiEmbedder(BaseEmbedder):
 
         if not texts:
             return []
-        result = genai.embed_content(
-            model=self._model,
-            content=texts,
-            task_type="retrieval_document",
-        )
+        with gemini_http_proxy():
+            result = genai.embed_content(
+                model=self._model,
+                content=texts,
+                task_type="retrieval_document",
+            )
         embeddings = result.get("embedding") if isinstance(result, dict) else None
         if embeddings is None:
             embeddings = getattr(result, "embedding", None)
