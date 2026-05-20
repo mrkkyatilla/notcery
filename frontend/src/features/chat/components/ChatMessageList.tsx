@@ -10,6 +10,8 @@ type Props = {
   isLoading: boolean
   isSending: boolean
   workspaceId: string
+  noteId?: string | null
+  onAppendToNote?: (markdown: string) => void
 }
 
 export function ChatMessageList({
@@ -17,6 +19,8 @@ export function ChatMessageList({
   isLoading,
   isSending,
   workspaceId,
+  noteId,
+  onAppendToNote,
 }: Props) {
   const { t } = useTranslation('chat')
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -49,6 +53,8 @@ export function ChatMessageList({
           key={message.id ?? `${message.role}-${message.created_at}`}
           message={message}
           workspaceId={workspaceId}
+          noteId={noteId}
+          onAppendToNote={onAppendToNote}
         />
       ))}
       {isSending ? (

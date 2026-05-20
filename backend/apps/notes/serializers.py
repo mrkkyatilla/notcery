@@ -25,6 +25,7 @@ class NoteSerializer(serializers.ModelSerializer):
             "subject_id",
             "title",
             "content_json",
+            "content_markdown",
             "indexed_at",
             "updated_at",
         )
@@ -35,6 +36,7 @@ class NoteCreateSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=500, required=False, allow_blank=True, default="")
     subject_id = serializers.UUIDField(required=False, allow_null=True)
     content_json = serializers.JSONField(required=False)
+    content_markdown = serializers.CharField(required=False, allow_blank=True)
 
     def validate_subject_id(self, value):
         workspace: Workspace = self.context["workspace"]
@@ -58,6 +60,7 @@ class NoteUpdateSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=500, required=False, allow_blank=True)
     subject_id = serializers.UUIDField(required=False, allow_null=True)
     content_json = serializers.JSONField(required=False)
+    content_markdown = serializers.CharField(required=False, allow_blank=True)
 
     def validate_subject_id(self, value):
         workspace: Workspace = self.context.get("workspace")

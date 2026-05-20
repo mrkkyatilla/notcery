@@ -2,14 +2,26 @@ from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import F, QuerySet
 
 from apps.notes.models import Note
+from apps.notes.markdown_plain import strip_markdown
 from apps.notes.tiptap import extract_plain_text
 from apps.planner.models import Workspace
 
 
-def apply_content_update(note: Note, content_json: dict | None = None) -> None:
-    if content_json is not None:
+def apply_content_update(
+    note: Note,
+    content_json: dict | None = None,
+    *,
+    content_markdown: str | None = None,
+) -> None:
+    if content_markdown is not None:
+        note.content_markdown = content_markdown
+        note.content_plain = strip_markdown(content_markdown)
+    elif content_json is not None:
         note.content_json = content_json
-    note.content_plain = extract_plain_text(note.content_json)
+        if note.content_markdown:
+            note.content_plain = strip_markdown(note.content_markdown)
+        else:
+            note.content_plain = extract_plain_text(note.content_json)
     note.indexed_at = None
 
 

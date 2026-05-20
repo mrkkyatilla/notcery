@@ -16,13 +16,26 @@
   "editor": {
     "title": "Title",
     "titlePlaceholder": "Note title",
-    "placeholder": "Start writing…"
+    "placeholder": "Start writing Markdown…",
+    "mode": {
+      "edit": "Write",
+      "preview": "Preview",
+      "split": "Split"
+    }
   },
   "toolbar": {
     "bold": "Bold",
     "italic": "Italic",
     "bulletList": "Bullet list",
-    "code": "Code block"
+    "code": "Code block",
+    "snippets": {
+      "table": "Table",
+      "checklist": "Tasks",
+      "callout": "Callout",
+      "mermaid": "Diagram",
+      "details": "Collapse",
+      "math": "Math"
+    }
   },
   "empty": {
     "selectOrCreate": "Select a note from the sidebar or create a new one."

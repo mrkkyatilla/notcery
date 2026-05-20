@@ -9,6 +9,7 @@
   "sources": "Sources",
   "readMore": "Read more",
   "readLess": "Show less",
+  "appendToNote": "Add to note",
   "upgrade": "Upgrade to Pro",
   "quota": {
     "chip": "{{used}}/{{limit}} msgs",

@@ -10,6 +10,7 @@ import type {
 
 export type NoteCreateBody = NoteCreate & {
   content_json?: TipTapDocument
+  content_markdown?: string
 }
 
 type ListResponse<T> = { results: T[] }

@@ -15,9 +15,11 @@ const UUID_RE =
 type Props = {
   message: ChatMessage
   workspaceId: string
+  noteId?: string | null
+  onAppendToNote?: (markdown: string) => void
 }
 
-export function ChatBubble({ message, workspaceId }: Props) {
+export function ChatBubble({ message, workspaceId, noteId, onAppendToNote }: Props) {
   const { t } = useTranslation('chat')
   const isUser = message.role === 'user'
   const [expanded, setExpanded] = useState(false)
@@ -50,6 +52,17 @@ export function ChatBubble({ message, workspaceId }: Props) {
                 onClick={() => setExpanded((v) => !v)}
               >
                 {expanded ? t('readLess') : t('readMore')}
+              </Button>
+            ) : null}
+            {noteId && onAppendToNote ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-2 h-7 text-xs"
+                onClick={() => onAppendToNote(content)}
+              >
+                {t('appendToNote')}
               </Button>
             ) : null}
           </>

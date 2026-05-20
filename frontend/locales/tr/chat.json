@@ -9,6 +9,7 @@
   "sources": "Kaynaklar",
   "readMore": "Devamını oku",
   "readLess": "Daha az göster",
+  "appendToNote": "Nota ekle",
   "upgrade": "Pro'ya geç",
   "quota": {
     "chip": "{{used}}/{{limit}} mesaj",

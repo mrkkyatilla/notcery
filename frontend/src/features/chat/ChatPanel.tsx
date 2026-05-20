@@ -17,9 +17,10 @@ type Props = {
   workspaceId: string
   noteId?: string | null
   subjectId?: string | null
+  onAppendToNote?: (markdown: string) => void
 }
 
-export function ChatPanel({ workspaceId, noteId, subjectId }: Props) {
+export function ChatPanel({ workspaceId, noteId, subjectId, onAppendToNote }: Props) {
   const { t } = useTranslation('chat')
   const sessionQuery = useChatSession(workspaceId)
   const sessionId = sessionQuery.data?.id
@@ -66,6 +67,8 @@ export function ChatPanel({ workspaceId, noteId, subjectId }: Props) {
         isLoading={messagesQuery.isLoading || sessionQuery.isLoading}
         isSending={sendMutation.isPending}
         workspaceId={workspaceId}
+        noteId={noteId}
+        onAppendToNote={onAppendToNote}
       />
 
       <ChatComposer

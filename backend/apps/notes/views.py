@@ -55,8 +55,12 @@ class NoteListCreateView(APIView):
             subject=subject,
             title=data.get("title", ""),
             content_json=data.get("content_json", empty_document()),
+            content_markdown=data.get("content_markdown", ""),
         )
-        apply_content_update(note)
+        if "content_markdown" in data:
+            apply_content_update(note, content_markdown=data["content_markdown"])
+        else:
+            apply_content_update(note, data.get("content_json"))
         note.save()
         refresh_search_vector(note)
 
@@ -103,7 +107,9 @@ class NoteDetailView(APIView):
                 if subject_id
                 else None
             )
-        if "content_json" in data:
+        if "content_markdown" in data:
+            apply_content_update(note, content_markdown=data["content_markdown"])
+        elif "content_json" in data:
             apply_content_update(note, data["content_json"])
 
         note.save()

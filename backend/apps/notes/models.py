@@ -16,6 +16,7 @@ class Note(models.Model):
     )
     title = models.CharField(max_length=500, blank=True, default="")
     content_json = models.JSONField(default=empty_document)  # callable default
+    content_markdown = models.TextField(blank=True, default="")
     content_plain = models.TextField(blank=True, default="")
     search_vector = SearchVectorField(null=True, editable=False)
     indexed_at = models.DateTimeField(null=True, blank=True)

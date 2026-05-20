@@ -13,10 +13,39 @@ from apps.notes.models import Note
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT_PATH = Path(__file__).resolve().parent.parent / "prompts" / "chat_system.txt"
+NOTES_MARKDOWN_PROMPT_PATH = (
+    Path(__file__).resolve().parent.parent / "prompts" / "notes_markdown_authoring.txt"
+)
 
 
 def _load_system_template() -> str:
     return SYSTEM_PROMPT_PATH.read_text(encoding="utf-8")
+
+
+def _load_notes_markdown_spec() -> str:
+    return NOTES_MARKDOWN_PROMPT_PATH.read_text(encoding="utf-8")
+
+
+def _build_system_prompt(session: ChatSession, context: dict) -> str:
+    base = _load_system_template()
+    note_id = context.get("note_id")
+    if not note_id:
+        return base
+
+    try:
+        note = Note.objects.get(id=note_id, workspace=session.workspace)
+    except Note.DoesNotExist:
+        return base
+
+    excerpt = (note.content_markdown or note.content_plain or "")[:4000]
+    spec = _load_notes_markdown_spec()
+    return (
+        f"{base}\n\n"
+        f"{spec}\n\n"
+        f"Current open note (excerpt for context):\n"
+        f"Title: {note.title}\n\n"
+        f"{excerpt}"
+    )
 
 
 def _retrieve_chat_context(session: ChatSession, content: str, context: dict) -> list:
@@ -31,7 +60,8 @@ def _retrieve_chat_context(session: ChatSession, content: str, context: dict) ->
     if note_id:
         try:
             note = Note.objects.get(id=note_id, workspace=workspace)
-            query = f"{note.title} {note.content_plain[:500]} {query}"
+            body = (note.content_markdown or note.content_plain or "")[:500]
+            query = f"{note.title} {body} {query}"
         except Note.DoesNotExist:
             pass
 
@@ -49,7 +79,7 @@ def send_chat_message(session: ChatSession, content: str, context: dict | None =
 
     chunks = _retrieve_chat_context(session, content, context)
     rag_context, _chunk_ids = format_rag_context(chunks)
-    system_prompt = _load_system_template().format(rag_context=rag_context)
+    system_prompt = _build_system_prompt(session, context).format(rag_context=rag_context)
     citations = chunks_to_citations(chunks)
 
     backend = resolve_ai_backend()

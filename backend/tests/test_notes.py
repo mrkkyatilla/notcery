@@ -134,6 +134,21 @@ def test_note_other_user_forbidden(user, workspace):
 
 
 @pytest.mark.django_db
+def test_note_content_markdown(auth_client, workspace):
+    md = "# Kuantum\n\n- [x] okundu\n\n```mermaid\nflowchart TD\n  A --> B\n```"
+    create = auth_client.post(
+        f"/api/v1/workspaces/{workspace.id}/notes",
+        {"title": "MD", "content_markdown": md},
+        format="json",
+    )
+    assert create.status_code == 201
+    note = Note.objects.get(id=create.data["id"])
+    assert "Kuantum" in note.content_plain
+    assert "flowchart" not in note.content_plain
+    assert create.data["content_markdown"] == md
+
+
+@pytest.mark.django_db
 def test_content_update_clears_indexed_at(auth_client, workspace):
     create = auth_client.post(
         f"/api/v1/workspaces/{workspace.id}/notes",

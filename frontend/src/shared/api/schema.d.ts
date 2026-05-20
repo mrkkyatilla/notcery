@@ -691,6 +691,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/lab/files/{file_id}/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["streamLabFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/workspaces/{workspace_id}/lab/sessions": {
         parameters: {
             query?: never;
@@ -749,6 +765,70 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["labRetrieve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workspaces/{workspace_id}/lab/imports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listLabImports"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workspaces/{workspace_id}/lab/imports/zip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createLabImportZip"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workspaces/{workspace_id}/lab/imports/git": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createLabImportGit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lab/imports/{import_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getLabImport"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1112,8 +1192,10 @@ export interface components {
         Note: components["schemas"]["NoteSummary"] & {
             /** Format: uuid */
             workspace_id?: string;
-            /** @description TipTap document JSON */
+            /** @description TipTap document JSON (legacy) */
             content_json?: Record<string, never>;
+            /** @description Canonical Markdown source */
+            content_markdown?: string;
             /** Format: date-time */
             indexed_at?: string | null;
         };
@@ -1121,10 +1203,17 @@ export interface components {
             title?: string;
             /** Format: uuid */
             subject_id?: string;
+            /** @description TipTap document JSON (legacy) */
+            content_json?: Record<string, never>;
+            /** @description Canonical Markdown source */
+            content_markdown?: string;
         };
         NoteUpdate: {
             title?: string;
+            /** @description TipTap document JSON (legacy) */
             content_json?: Record<string, never>;
+            /** @description Canonical Markdown source */
+            content_markdown?: string;
             /** Format: uuid */
             subject_id?: string;
         };
@@ -1303,6 +1392,8 @@ export interface components {
             upload_url?: string;
             file_key?: string;
             expires_in?: number;
+            /** @description Content-Type signed for the presigned PUT (must match upload header) */
+            mime_type?: string;
         };
         LabFileCreate: {
             file_key: string;
@@ -1318,9 +1409,14 @@ export interface components {
             folder_id?: string;
         };
         LabFileContent: {
+            /** @enum {string} */
+            preview_kind?: "text" | "pdf" | "image" | "binary";
             content?: string;
             name?: string;
             mime_type?: string;
+            /** Format: uri */
+            download_url?: string;
+            expires_in?: number;
         };
         LabFileContentUpdate: {
             content: string;
@@ -1395,6 +1491,42 @@ export interface components {
         };
         LabRetrieveResponse: {
             results?: Record<string, never>[];
+        };
+        LabImportZipRequest: {
+            file_key: string;
+            original_filename: string;
+            size_bytes: number;
+            /** Format: uuid */
+            parent_folder_id?: string;
+            label?: string;
+        };
+        LabImportGitRequest: {
+            /** Format: uri */
+            url: string;
+            branch?: string;
+            /** Format: uuid */
+            parent_folder_id?: string;
+            label?: string;
+        };
+        LabImport: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            workspace_id?: string;
+            /** @enum {string} */
+            status?: "pending" | "running" | "completed" | "failed" | "cancelled";
+            /** @enum {string} */
+            source_type?: "zip" | "git";
+            source_label?: string;
+            source_payload?: Record<string, never>;
+            /** Format: uuid */
+            root_folder_id?: string;
+            stats?: Record<string, never>;
+            error_message?: string;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
         };
     };
     responses: {
@@ -2905,6 +3037,28 @@ export interface operations {
             };
         };
     };
+    streamLabFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Raw file bytes for inline preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": string;
+                };
+            };
+        };
+    };
     listLabSessions: {
         parameters: {
             query?: never;
@@ -3047,6 +3201,100 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LabRetrieveResponse"];
+                };
+            };
+        };
+    };
+    listLabImports: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        results?: components["schemas"]["LabImport"][];
+                    };
+                };
+            };
+        };
+    };
+    createLabImportZip: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabImportZipRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabImport"];
+                };
+            };
+        };
+    };
+    createLabImportGit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workspace_id: components["parameters"]["WorkspaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LabImportGitRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabImport"];
+                };
+            };
+        };
+    };
+    getLabImport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                import_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LabImport"];
                 };
             };
         };

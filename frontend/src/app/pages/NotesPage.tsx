@@ -6,9 +6,9 @@ import { useAuthStore } from '@/features/auth/auth-store'
 import { ChatPanel } from '@/features/chat/ChatPanel'
 import { NoteEditor } from '@/features/notes/NoteEditor'
 import { NotesSidebar } from '@/features/notes/NotesSidebar'
-import { EMPTY_TIPTAP_DOC } from '@/features/notes/tiptap-document'
 import { useAutosaveNote } from '@/features/notes/use-autosave-note'
 import { useCreateNote, useNote, useNotesList } from '@/features/notes/queries'
+import { migrateNoteContent } from '@/features/notes/tiptap-to-markdown'
 import { useWorkspaceStore } from '@/features/workspace/workspace-store'
 import { useDebouncedValue } from '@/shared/hooks/use-debounced-value'
 import { Button } from '@/shared/ui/button'
@@ -39,10 +39,19 @@ export function NotesPage() {
   })
   const noteQuery = useNote(noteId ?? null)
 
-  const { status: saveStatus, scheduleSave } = useAutosaveNote({
+  const { status: saveStatus, scheduleSave, flush } = useAutosaveNote({
     noteId: noteId ?? null,
     workspaceId: workspaceId ?? null,
   })
+
+  const handleAppendToNote = (markdown: string) => {
+    if (!note) return
+    const base = migrateNoteContent(note.content_markdown, note.content_json).trim()
+    const block = markdown.trim()
+    const next = base ? `${base}\n\n---\n\n${block}` : block
+    scheduleSave({ content_markdown: next })
+    void flush()
+  }
 
   useEffect(() => {
     if (workspaceId) setActiveWorkspaceId(workspaceId)
@@ -64,7 +73,7 @@ export function NotesPage() {
     const note = await createMutation.mutateAsync({
       title: t('list.untitled'),
       subject_id: subjectFilter || undefined,
-      content_json: EMPTY_TIPTAP_DOC,
+      content_markdown: '',
     })
     navigate(`/w/${workspaceId}/notes/${note.id}`)
     setMobilePanel('editor')
@@ -73,7 +82,7 @@ export function NotesPage() {
   const note = noteQuery.data
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)] flex-col">
+    <div className="flex h-[calc(100dvh-3.5rem)] flex-col pb-[env(safe-area-inset-bottom)]">
       <div className="flex gap-2 border-b p-2 md:hidden">
         {(['list', 'editor', 'chat'] as const).map((panel) => (
           <Button
@@ -133,7 +142,9 @@ export function NotesPage() {
               note={note}
               saveStatus={saveStatus}
               onTitleChange={(title) => scheduleSave({ title })}
-              onContentChange={(content_json) => scheduleSave({ content_json })}
+              onContentChange={(content_markdown) =>
+                scheduleSave({ content_markdown })
+              }
             />
           ) : null}
         </section>
@@ -148,6 +159,7 @@ export function NotesPage() {
             workspaceId={workspaceId}
             noteId={noteId}
             subjectId={(note?.subject_id ?? subjectFilter) || undefined}
+            onAppendToNote={noteId ? handleAppendToNote : undefined}
           />
         </div>
       </div>

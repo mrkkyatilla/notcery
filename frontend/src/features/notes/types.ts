@@ -8,6 +8,7 @@ export type NoteUpdate = Omit<
   'content_json'
 > & {
   content_json?: TipTapDocument | Record<string, unknown>
+  content_markdown?: string
 }
 
 export type TipTapDocument = {

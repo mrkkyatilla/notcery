@@ -16,13 +16,26 @@
   "editor": {
     "title": "Başlık",
     "titlePlaceholder": "Not başlığı",
-    "placeholder": "Yazmaya başlayın…"
+    "placeholder": "Markdown yazmaya başlayın…",
+    "mode": {
+      "edit": "Yaz",
+      "preview": "Önizle",
+      "split": "Bölünmüş"
+    }
   },
   "toolbar": {
     "bold": "Kalın",
     "italic": "İtalik",
     "bulletList": "Liste",
-    "code": "Kod bloğu"
+    "code": "Kod bloğu",
+    "snippets": {
+      "table": "Tablo",
+      "checklist": "Görev",
+      "callout": "Callout",
+      "mermaid": "Diyagram",
+      "details": "Katlanır",
+      "math": "Formül"
+    }
   },
   "empty": {
     "selectOrCreate": "Soldan bir not seçin veya yeni not oluşturun."

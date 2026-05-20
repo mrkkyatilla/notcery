@@ -1,0 +1,54 @@
+.note-markdown {
+  line-height: 1.65;
+  word-wrap: break-word;
+}
+
+.note-markdown .markdown-alert {
+  border-radius: 0.375rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  font-style: normal;
+}
+
+.note-markdown .markdown-alert-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.note-markdown .markdown-alert-note {
+  border-left-color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.08);
+}
+
+.note-markdown .markdown-alert-tip {
+  border-left-color: hsl(142 76% 36%);
+  background: hsl(142 76% 36% / 0.08);
+}
+
+.note-markdown .markdown-alert-important {
+  border-left-color: hsl(262 83% 58%);
+  background: hsl(262 83% 58% / 0.08);
+}
+
+.note-markdown .markdown-alert-warning {
+  border-left-color: hsl(38 92% 50%);
+  background: hsl(38 92% 50% / 0.1);
+}
+
+.note-markdown .markdown-alert-caution {
+  border-left-color: hsl(0 84% 60%);
+  background: hsl(0 84% 60% / 0.08);
+}
+
+.chat-markdown .markdown-alert {
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  font-style: normal;
+  font-size: 0.875rem;
+}
+
+.note-mermaid svg {
+  max-width: 100%;
+  height: auto;
+}

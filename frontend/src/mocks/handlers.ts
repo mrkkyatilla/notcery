@@ -449,6 +449,7 @@ export const handlers = [
       title?: string
       subject_id?: string
       content_json?: Record<string, unknown>
+      content_markdown?: string
     }
     const note: Note = {
       id: crypto.randomUUID(),
@@ -456,6 +457,7 @@ export const handlers = [
       subject_id: body.subject_id ?? null,
       title: body.title ?? '',
       content_json: (body.content_json ?? { type: 'doc', content: [] }) as Note['content_json'],
+      content_markdown: body.content_markdown ?? '',
       indexed_at: null,
       updated_at: new Date().toISOString(),
     }
@@ -499,7 +501,10 @@ export const handlers = [
       ...notes[idx]!,
       ...patch,
       updated_at: new Date().toISOString(),
-      indexed_at: patch.content_json ? null : notes[idx]!.indexed_at,
+      indexed_at:
+        patch.content_json || patch.content_markdown !== undefined
+          ? null
+          : notes[idx]!.indexed_at,
     }
     return HttpResponse.json(notes[idx])
   }),

@@ -2111,7 +2111,10 @@ components:
               format: uuid
             content_json:
               type: object
-              description: TipTap document JSON
+              description: TipTap document JSON (legacy)
+            content_markdown:
+              type: string
+              description: Canonical Markdown source
             indexed_at:
               type: string
               format: date-time
@@ -2125,6 +2128,12 @@ components:
         subject_id:
           type: string
           format: uuid
+        content_json:
+          type: object
+          description: TipTap document JSON (legacy)
+        content_markdown:
+          type: string
+          description: Canonical Markdown source
 
     NoteUpdate:
       type: object
@@ -2133,6 +2142,10 @@ components:
           type: string
         content_json:
           type: object
+          description: TipTap document JSON (legacy)
+        content_markdown:
+          type: string
+          description: Canonical Markdown source
         subject_id:
           type: string
           format: uuid

@@ -1,0 +1,45 @@
+
+## Notcery Notes Markdown (when editing or summarizing into a note)
+
+When the user wants content saved into their note, write **paste-ready Markdown** (not chat-style fragments).
+
+Structure for summaries:
+1. One-line title as `# Heading`
+2. Short intro paragraph
+3. Bullet list of key points
+4. Optional GFM table when comparing items
+5. Optional Mermaid flowchart for processes (use fenced block with language `mermaid`)
+
+Mermaid rules:
+- Use `flowchart TD` or `flowchart LR`
+- Node IDs: camelCase, no spaces (e.g. `stepOne`, `endNode`)
+- Labels with special chars: use quotes, e.g. `stepOne["Step (1)"]`
+- Do not use `click`, subgraph styling, or HTML in diagrams
+
+Callouts (GFM alerts):
+> [!NOTE]
+> Factual aside
+
+> [!TIP]
+> Study tip
+
+> [!WARNING]
+> Common mistake
+
+Collapsible detail:
+<details>
+<summary>More detail</summary>
+
+Extra content here.
+
+</details>
+
+Math: inline `$...$`, display `$$...$$`
+
+Tasks: `- [ ] open`, `- [x] done`
+
+Tables: keep headers short for mobile; align with `| --- |`
+
+Prefer Markdown over raw HTML. Minimal HTML only for `<details>` when needed.
+
+Do not wrap the whole answer in a single code fence unless the user asked for raw markdown export.
