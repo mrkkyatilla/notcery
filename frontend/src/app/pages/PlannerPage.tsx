@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PlanAdjustmentsBanner } from '@/features/ai-plan/PlanAdjustmentsBanner'
@@ -17,6 +17,19 @@ export function PlannerPage() {
   const [generateOpen, setGenerateOpen] = useState(false)
   const isGenerating = usePlanGenerationStore((s) => s.isGenerating)
 
+  const handleRangeChange = useCallback((start: Date, end: Date) => {
+    setWeekRange((prev) => {
+      if (
+        prev &&
+        prev.start.getTime() === start.getTime() &&
+        prev.end.getTime() === end.getTime()
+      ) {
+        return prev
+      }
+      return { start, end }
+    })
+  }, [])
+
   return (
     <div className="space-y-6">
       <div>
@@ -30,7 +43,7 @@ export function PlannerPage() {
         <PlannerCalendar
           isGenerating={isGenerating}
           onGenerateClick={() => setGenerateOpen(true)}
-          onRangeChange={(start, end) => setWeekRange({ start, end })}
+          onRangeChange={handleRangeChange}
         />
         {workspaceId && weekRange ? (
           <PlanVersionsPanel

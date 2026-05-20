@@ -12,6 +12,7 @@ import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
+import { Select } from '@/shared/ui/select'
 
 const profileSchema = z.object({
   display_name: z.string().max(120).optional(),
@@ -70,17 +71,13 @@ export function SettingsProfilePage() {
 
             <div className="space-y-2">
               <Label htmlFor="timezone">{t('profile.timezone')}</Label>
-              <select
-                id="timezone"
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
-                {...register('timezone')}
-              >
+              <Select id="timezone" {...register('timezone')}>
                 {TIMEZONES.map((tz) => (
                   <option key={tz} value={tz}>
                     {tz}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
 
             <Button type="submit" disabled={isSubmitting}>

@@ -71,6 +71,18 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+  select,
+  input:not([type='checkbox']):not([type='radio']):not([type='file']) {
+    color-scheme: light;
+  }
+  .dark select,
+  .dark input:not([type='checkbox']):not([type='radio']):not([type='file']) {
+    color-scheme: dark;
+  }
+  select option {
+    background-color: var(--card);
+    color: var(--card-foreground);
+  }
   html.theme-transition,
   html.theme-transition * {
     transition:

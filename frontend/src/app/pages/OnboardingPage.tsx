@@ -15,6 +15,7 @@ import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
+import { Select } from '@/shared/ui/select'
 
 const TIMEZONES = Intl.supportedValuesOf('timeZone')
 
@@ -91,9 +92,8 @@ export function OnboardingPage() {
           <>
             <div className="space-y-2">
               <Label htmlFor="timezone">{t('onboarding.stepTimezone')}</Label>
-              <select
+              <Select
                 id="timezone"
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
                 value={timezone}
                 onChange={(e) => setTimezone(e.target.value)}
               >
@@ -102,7 +102,7 @@ export function OnboardingPage() {
                     {tz}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
             <Button
               type="button"

@@ -10,6 +10,7 @@ import { showApiError } from '@/shared/api/show-api-error'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
+import { Select } from '@/shared/ui/select'
 import { useEffect, useMemo, useState } from 'react'
 
 export function WorkspaceSelector() {
@@ -49,9 +50,9 @@ export function WorkspaceSelector() {
     <div className="flex flex-wrap items-end gap-2">
       <div className="space-y-1">
         <Label htmlFor="workspace-select">{t('workspace.label')}</Label>
-        <select
+        <Select
           id="workspace-select"
-          className="flex h-9 min-w-[12rem] rounded-md border border-input bg-transparent px-3 text-sm"
+          className="min-w-48"
           value={activeId ?? ''}
           onChange={(e) => setActiveId(e.target.value || null)}
           disabled={workspacesQuery.isLoading || workspaces.length === 0}
@@ -65,7 +66,7 @@ export function WorkspaceSelector() {
               </option>
             ))
           )}
-        </select>
+        </Select>
       </div>
       <div className="flex gap-2">
         <Input

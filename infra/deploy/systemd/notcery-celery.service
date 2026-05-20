@@ -1,0 +1,17 @@
+[Unit]
+Description=Notcery Celery worker
+After=network.target notcery-backend.service
+Wants=notcery-backend.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/notcery/backend
+EnvironmentFile=/var/www/notcery/.env
+Environment=DJANGO_SETTINGS_MODULE=config.settings.production
+ExecStart=/var/www/notcery/backend/.venv/bin/celery -A config worker -l info
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -8,6 +8,7 @@ import type { Subject } from '@/features/workspace/workspace-api'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
+import { Select } from '@/shared/ui/select'
 
 type Props = {
   subjects: Subject[]
@@ -52,18 +53,14 @@ export function EventForm({
 
       <div className="space-y-2">
         <Label htmlFor="subject_id">{t('event.subject')}</Label>
-        <select
-          id="subject_id"
-          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
-          {...register('subject_id')}
-        >
+        <Select id="subject_id" {...register('subject_id')}>
           <option value="">{t('event.noSubject')}</option>
           {subjects.map((s) => (
             <option key={s.id} value={s.id}>
               {s.name}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -82,32 +79,24 @@ export function EventForm({
 
       <div className="space-y-2">
         <Label htmlFor="method">{t('event.method')}</Label>
-        <select
-          id="method"
-          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
-          {...register('method')}
-        >
+        <Select id="method" {...register('method')}>
           {STUDY_METHODS.map((m) => (
             <option key={m} value={m}>
               {t(`methods.${m}`)}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="status">{t('event.status')}</Label>
-        <select
-          id="status"
-          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
-          {...register('status')}
-        >
+        <Select id="status" {...register('status')}>
           {STUDY_STATUSES.map((s) => (
             <option key={s} value={s}>
               {t(`status.${s}`)}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <div className="flex justify-end gap-2">

@@ -8,6 +8,7 @@ import { useUploadDocument } from '@/features/library/queries'
 import { listSubjects } from '@/features/workspace/workspace-api'
 import { Button } from '@/shared/ui/button'
 import { Label } from '@/shared/ui/label'
+import { Select } from '@/shared/ui/select'
 
 type Props = {
   workspaceId: string
@@ -58,9 +59,8 @@ export function DocumentUpload({ workspaceId }: Props) {
       <div className="flex flex-wrap items-end gap-3">
         <div className="min-w-[160px] space-y-1.5">
           <Label htmlFor="doc-subject">{t('upload.subject')}</Label>
-          <select
+          <Select
             id="doc-subject"
-            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs"
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
             disabled={busy}
@@ -71,7 +71,7 @@ export function DocumentUpload({ workspaceId }: Props) {
                 {s.name}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
         <div className="min-w-[200px] flex-1">
           <input

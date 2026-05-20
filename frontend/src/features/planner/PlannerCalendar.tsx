@@ -10,7 +10,7 @@ import trLocale from '@fullcalendar/core/locales/tr'
 import interactionPlugin from '@fullcalendar/interaction'
 import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAuthStore } from '@/features/auth/auth-store'
@@ -43,7 +43,15 @@ export function PlannerCalendar({ onRangeChange, onGenerateClick, isGenerating }
   const user = useAuthStore((s) => s.user)
   const workspaceId = useWorkspaceStore((s) => s.activeWorkspaceId)
   const calendarRef = useRef<FullCalendar>(null)
+  const onRangeChangeRef = useRef(onRangeChange)
+  onRangeChangeRef.current = onRangeChange
+  const lastRangeRef = useRef<{ from: string; to: string } | null>(null)
   const timeZone = user?.timezone ?? 'UTC'
+
+  useEffect(() => {
+    lastRangeRef.current = null
+    setRange(null)
+  }, [workspaceId])
 
   const [view, setView] = useState<ViewType>('timeGridWeek')
   const [range, setRange] = useState<{ from: string; to: string } | null>(null)
@@ -89,10 +97,14 @@ export function PlannerCalendar({ onRangeChange, onGenerateClick, isGenerating }
     (arg: DatesSetArg) => {
       const from = toApiDateTime(arg.start, timeZone)
       const to = toApiDateTime(arg.end, timeZone)
+      if (lastRangeRef.current?.from === from && lastRangeRef.current?.to === to) {
+        return
+      }
+      lastRangeRef.current = { from, to }
       setRange({ from, to })
-      onRangeChange?.(arg.start, arg.end)
+      onRangeChangeRef.current?.(arg.start, arg.end)
     },
-    [onRangeChange, timeZone],
+    [timeZone],
   )
 
   const handleEventClick = (info: EventClickArg) => {
@@ -186,16 +198,18 @@ export function PlannerCalendar({ onRangeChange, onGenerateClick, isGenerating }
         ) : null}
       </div>
 
-      {eventsQuery.isLoading ? <Skeleton className="h-[600px] w-full" /> : null}
-
-      {!eventsQuery.isLoading && !isGenerating && calendarEvents.length === 0 ? (
+      {!isGenerating && !eventsQuery.isLoading && calendarEvents.length === 0 ? (
         <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
           {t('empty.noEvents')}
         </p>
       ) : null}
 
-      {!eventsQuery.isLoading ? (
-      <div className="relative planner-calendar rounded-lg border bg-card p-2">
+      <div className="relative planner-calendar min-h-[600px] rounded-lg border bg-card p-2">
+        {eventsQuery.isLoading ? (
+          <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-background/60">
+            <Skeleton className="h-8 w-32" />
+          </div>
+        ) : null}
         {isGenerating ? (
           <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-background/70 backdrop-blur-[1px]">
             <p className="text-sm font-medium text-muted-foreground animate-pulse">{t('ai.overlay')}</p>
@@ -225,7 +239,6 @@ export function PlannerCalendar({ onRangeChange, onGenerateClick, isGenerating }
           key={`${workspaceId}-${timeZone}-${i18n.language}`}
         />
       </div>
-      ) : null}
 
       <EventDetailDialog
         event={selectedEvent}

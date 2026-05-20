@@ -10,6 +10,7 @@ import type { Theme } from '@/shared/theme/theme-store'
 import { useTheme } from '@/shared/theme/use-theme'
 import { Button } from '@/shared/ui/button'
 import { Label } from '@/shared/ui/label'
+import { Select } from '@/shared/ui/select'
 
 type Props = {
   layout?: 'compact' | 'form'
@@ -60,9 +61,8 @@ export function LocaleThemeControls({ layout = 'compact' }: Props) {
     <div className="grid gap-4 sm:grid-cols-2">
       <div className="space-y-2">
         <Label htmlFor="locale">{t('settings:profile.locale')}</Label>
-        <select
+        <Select
           id="locale"
-          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
           value={i18n.language.startsWith('en') ? 'en' : 'tr'}
           onChange={(e) => handleLocale(e.target.value as Locale)}
         >
@@ -71,13 +71,12 @@ export function LocaleThemeControls({ layout = 'compact' }: Props) {
               {opt.label}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
       <div className="space-y-2">
         <Label htmlFor="theme">{t('settings:profile.theme')}</Label>
-        <select
+        <Select
           id="theme"
-          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
           value={theme}
           onChange={(e) => handleTheme(e.target.value as Theme)}
         >
@@ -86,7 +85,7 @@ export function LocaleThemeControls({ layout = 'compact' }: Props) {
               {opt.label}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
     </div>
   )
