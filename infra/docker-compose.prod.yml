@@ -1,15 +1,18 @@
 # Production overlay: bind infra ports to localhost only.
 # Usage (from repo root):
 #   docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d
+#
+# Ubuntu often has system postgresql on :5432 — default host port 5433 avoids conflict.
+# Set POSTGRES_HOST_PORT=5432 in .env only if nothing else uses 5432.
 
 services:
   postgres:
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5433}:5432"
 
   redis:
     ports:
-      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:${REDIS_HOST_PORT:-6379}:6379"
 
   minio:
     ports:

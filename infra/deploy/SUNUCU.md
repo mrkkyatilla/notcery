@@ -68,11 +68,40 @@ python3 -c "import secrets; print(secrets.token_urlsafe(48))"
 
 ---
 
-## 3. Altyapı (Postgres, Redis, MinIO)
+## Sorun giderme: `address already in use` (5432)
+
+Sunucuda **sistem PostgreSQL** (`apt install postgresql`) çoğu zaman `127.0.0.1:5432` kullanır; Docker aynı porta bind edemez.
+
+**Seçenek A — Docker Postgres (önerilen, pgvector için):**
+
+```bash
+sudo systemctl stop postgresql
+sudo systemctl disable postgresql   # isteğe bağlı, yeniden başlamasın
+```
+
+`.env`: `POSTGRES_HOST_PORT=5433` ve `DATABASE_URL=...@127.0.0.1:5433/...` (prod overlay varsayılanı).
+
+**Seçenek B — Sistem Postgres’i kullan, Docker postgres’i başlatma:**
+
+```bash
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d redis
+# DATABASE_URL mevcut sistem kullanıcı/şifre/port ile (genelde 5432)
+```
+
+Kontrol: `sudo ss -tlnp | grep 5432`
+
+---
+
+## 3. Altyapı (Postgres, Redis)
+
+**Storj** kullanıyorsanız MinIO’yu başlatmayın. `.env` için: `env.production.storj.example` ve `env-aciklama.md`.
 
 ```bash
 cd /var/www/notcery
-docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d
+# Storj:
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d postgres redis
+# Yerel MinIO ile:
+# docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d
 docker compose -f infra/docker-compose.yml ps
 ```
 
