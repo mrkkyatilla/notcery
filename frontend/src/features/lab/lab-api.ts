@@ -70,12 +70,27 @@ export async function deleteLabFile(fileId: string): Promise<void> {
   await apiRequest<void>(`/lab/files/${fileId}`, { method: 'DELETE' })
 }
 
-export async function getLabFileContent(fileId: string): Promise<{
-  content: string
+export type LabFileContentResponse = {
+  preview_kind: 'text' | 'pdf' | 'image' | 'binary'
+  content?: string
   name: string
   mime_type: string
-}> {
+  download_url?: string
+  expires_in?: number
+}
+
+export async function getLabFileContent(fileId: string): Promise<LabFileContentResponse> {
   return apiRequest(`/lab/files/${fileId}/content`)
+}
+
+export async function updateLabFile(
+  fileId: string,
+  body: { name?: string; folder_id?: string | null },
+): Promise<LabFile> {
+  return apiRequest<LabFile>(`/lab/files/${fileId}`, {
+    method: 'PATCH',
+    body,
+  })
 }
 
 export async function updateLabFileContent(

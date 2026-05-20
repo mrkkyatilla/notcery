@@ -31,6 +31,25 @@ def ensure_root_folder(workspace: Workspace) -> LabFolder:
     return root
 
 
+def resolve_parent_folder(workspace: Workspace, parent_id) -> LabFolder:
+    """Use workspace root when parent_id is omitted (Lab explorer expects a single tree root)."""
+    if parent_id is None:
+        return ensure_root_folder(workspace)
+    folder = LabFolder.objects.filter(id=parent_id, workspace=workspace).first()
+    if folder is None:
+        raise ValueError("parent folder not found")
+    return folder
+
+
+def repair_orphan_folders(workspace: Workspace) -> None:
+    """Attach legacy folders created with parent=NULL to the workspace root."""
+    root = ensure_root_folder(workspace)
+    LabFolder.objects.filter(
+        workspace=workspace,
+        parent__isnull=True,
+    ).exclude(path="/").update(parent=root)
+
+
 def get_or_create_artifacts_folder(workspace: Workspace) -> LabFolder:
     root = ensure_root_folder(workspace)
     path = "/artifacts"

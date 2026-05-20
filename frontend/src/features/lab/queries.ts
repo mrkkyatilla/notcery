@@ -6,6 +6,7 @@ import {
   createLabUploadUrl,
   deleteLabFile,
   getLabFileContent,
+  updateLabFile,
   listLabFiles,
   listLabFolders,
   listLabMessages,
@@ -152,6 +153,25 @@ export function useDeleteLabFile(workspaceId: string | null) {
     mutationFn: (fileId: string) => deleteLabFile(fileId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['lab-files', workspaceId] })
+    },
+    onError: showApiError,
+  })
+}
+
+export function useUpdateLabFile(workspaceId: string | null) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({
+      fileId,
+      ...body
+    }: {
+      fileId: string
+      name?: string
+      folder_id?: string | null
+    }) => updateLabFile(fileId, body),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['lab-files', workspaceId] })
+      void qc.invalidateQueries({ queryKey: labFoldersKey(workspaceId ?? '') })
     },
     onError: showApiError,
   })

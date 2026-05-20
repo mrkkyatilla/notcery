@@ -34,6 +34,23 @@ def generate_presigned_upload_url(file_key: str, mime_type: str, expires: int = 
     )
 
 
+def generate_presigned_download_url(
+    file_key: str,
+    mime_type: str = "application/octet-stream",
+    expires: int = 3600,
+) -> str:
+    client = _s3_client()
+    return client.generate_presigned_url(
+        ClientMethod="get_object",
+        Params={
+            "Bucket": settings.AWS_STORAGE_BUCKET_NAME,
+            "Key": file_key,
+            "ResponseContentType": mime_type,
+        },
+        ExpiresIn=expires,
+    )
+
+
 def download_file_bytes(file_key: str) -> bytes:
     client = _s3_client()
     response = client.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=file_key)

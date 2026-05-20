@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     LabFileContentView,
     LabFileDetailView,
+    LabFileStreamView,
     LabFileListCreateView,
     LabFileUploadUrlView,
     LabFolderDetailView,
@@ -43,6 +44,11 @@ urlpatterns = [
         "lab/files/<uuid:file_id>/content",
         LabFileContentView.as_view(),
         name="lab-file-content",
+    ),
+    path(
+        "lab/files/<uuid:file_id>/stream",
+        LabFileStreamView.as_view(),
+        name="lab-file-stream",
     ),
     path(
         "workspaces/<uuid:workspace_id>/lab/sessions",

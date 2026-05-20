@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from django.db import transaction
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -37,15 +38,22 @@ from apps.lab.serializers import (
     LabUploadUrlResponseSerializer,
 )
 from apps.lab.services.agent import send_lab_message
+from apps.lab.parsing import is_image_previewable, is_pdf_previewable, is_text_previewable
 from apps.lab.storage import (
     build_lab_file_key,
     delete_file,
     download_file_bytes,
+    generate_presigned_download_url,
     generate_presigned_upload_url,
     upload_text_content,
 )
 from apps.lab.tasks import index_lab_file_task
-from apps.lab.vfs import build_child_path, ensure_root_folder
+from apps.lab.vfs import (
+    build_child_path,
+    ensure_root_folder,
+    repair_orphan_folders,
+    resolve_parent_folder,
+)
 from apps.planner.permissions import IsWorkspaceOwner
 
 
@@ -64,6 +72,7 @@ class LabFolderListCreateView(APIView):
     def get(self, request, workspace_id):
         workspace = get_owned_workspace(request.user, workspace_id)
         ensure_root_folder(workspace)
+        repair_orphan_folders(workspace)
         folders = LabFolder.objects.filter(workspace=workspace)
         return Response({"results": LabFolderSerializer(folders, many=True).data})
 
@@ -72,7 +81,14 @@ class LabFolderListCreateView(APIView):
         serializer = LabFolderCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-        parent = _get_folder(workspace, data.get("parent_id"))
+        try:
+            parent = resolve_parent_folder(workspace, data.get("parent_id"))
+        except ValueError as exc:
+            raise APIError(
+                code="NOT_FOUND",
+                message="Parent folder not found.",
+                status_code=status.HTTP_404_NOT_FOUND,
+            ) from exc
         path = build_child_path(parent, data["name"])
         if LabFolder.objects.filter(workspace=workspace, path=path).exists():
             raise APIError(
@@ -115,7 +131,16 @@ class LabFolderDetailView(APIView):
             folder.name = data["name"]
             folder.path = build_child_path(folder.parent, folder.name)
         if "parent_id" in data:
-            folder.parent = _get_folder(folder.workspace, data["parent_id"])
+            try:
+                folder.parent = resolve_parent_folder(
+                    folder.workspace, data["parent_id"]
+                )
+            except ValueError as exc:
+                raise APIError(
+                    code="NOT_FOUND",
+                    message="Parent folder not found.",
+                    status_code=status.HTTP_404_NOT_FOUND,
+                ) from exc
             folder.path = build_child_path(folder.parent, folder.name)
         if "sort_order" in data:
             folder.sort_order = data["sort_order"]
@@ -241,21 +266,51 @@ class LabFileDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class LabFileStreamView(APIView):
+    """Inline file bytes for previews (avoids Storj CORS issues in the browser)."""
+
+    permission_classes = [IsWorkspaceOwner]
+
+    def get(self, request, file_id):
+        lab_file = LabFileDetailView().get_file(request, file_id)
+        raw = download_file_bytes(lab_file.file_key)
+        mime = lab_file.mime_type or "application/octet-stream"
+        response = HttpResponse(raw, content_type=mime)
+        response["Content-Disposition"] = f'inline; filename="{lab_file.name}"'
+        response["Cache-Control"] = "private, max-age=300"
+        return response
+
+
 class LabFileContentView(APIView):
     permission_classes = [IsWorkspaceOwner]
 
     def get(self, request, file_id):
         lab_file = LabFileDetailView().get_file(request, file_id)
-        try:
+        mime = lab_file.mime_type or "application/octet-stream"
+        expires = 3600
+        download_url = generate_presigned_download_url(
+            lab_file.file_key, mime, expires=expires
+        )
+        base = {
+            "name": lab_file.name,
+            "mime_type": mime,
+            "download_url": download_url,
+            "expires_in": expires,
+            "content": "",
+        }
+        if is_text_previewable(lab_file.name, mime):
             raw = download_file_bytes(lab_file.file_key)
-            content = raw.decode("utf-8", errors="replace")
-        except Exception as exc:
-            raise APIError(
-                code="VALIDATION_ERROR",
-                message="File is not readable as text.",
-                status_code=status.HTTP_400_BAD_REQUEST,
-            ) from exc
-        return Response({"content": content, "name": lab_file.name, "mime_type": lab_file.mime_type})
+            base["preview_kind"] = "text"
+            base["content"] = raw.decode("utf-8", errors="replace")
+            return Response(base)
+        if is_pdf_previewable(lab_file.name, mime):
+            base["preview_kind"] = "pdf"
+            return Response(base)
+        if is_image_previewable(lab_file.name, mime):
+            base["preview_kind"] = "image"
+            return Response(base)
+        base["preview_kind"] = "binary"
+        return Response(base)
 
     def put(self, request, file_id):
         lab_file = LabFileDetailView().get_file(request, file_id)

@@ -1,15 +1,26 @@
 {
   "navTitle": "Lab",
   "tree": {
-    "title": "Files",
+    "title": "Explorer",
     "upload": "Upload file",
     "newFolder": "New folder",
-    "root": "All folders",
-    "focus": "Include in RAG focus"
+    "root": "Workspace root",
+    "focus": "Include in RAG focus",
+    "rename": "Rename (double-click)",
+    "moveTo": "Move file to",
+    "pickFolder": "Choose folder",
+    "cancel": "Cancel",
+    "moveSelected": "Move selected file…"
   },
   "viewer": {
     "empty": "Select a file to preview",
-    "notReadable": "Could not load file content"
+    "notReadable": "Could not load file content",
+    "binaryHint": "Preview is not available for this format. Download from Storj or open externally.",
+    "download": "Download"
+  },
+  "layout": {
+    "hideChat": "Hide agent panel",
+    "showChat": "Show agent panel"
   },
   "artifacts": {
     "title": "Agent outputs",

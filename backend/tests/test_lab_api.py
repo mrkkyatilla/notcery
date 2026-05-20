@@ -55,3 +55,41 @@ def test_lab_folder_create_under_root(auth_client, workspace):
     assert resp.status_code == 201
     assert resp.data["path"] == "/data"
     assert LabFolder.objects.filter(workspace=workspace, path="/data").exists()
+
+
+def test_lab_folder_create_null_parent_uses_root(auth_client, workspace):
+    root = ensure_root_folder(workspace)
+    resp = auth_client.post(
+        f"/api/v1/workspaces/{workspace.id}/lab/folders",
+        {"name": "contracts"},
+        format="json",
+    )
+    assert resp.status_code == 201
+    folder = LabFolder.objects.get(workspace=workspace, path="/contracts")
+    assert folder.parent_id == root.id
+
+
+def test_lab_file_content_pdf_not_garbage(auth_client, workspace):
+    from apps.lab.models import LabFile
+    from unittest.mock import patch
+
+    root = ensure_root_folder(workspace)
+    lab_file = LabFile.objects.create(
+        workspace=workspace,
+        folder=root,
+        name="doc.pdf",
+        file_key="workspaces/x/lab/y/doc.pdf",
+        mime_type="application/pdf",
+        extension=".pdf",
+        size_bytes=100,
+        created_by=workspace.owner,
+    )
+    with patch(
+        "apps.lab.views.generate_presigned_download_url",
+        return_value="https://storj.example/doc.pdf",
+    ):
+        resp = auth_client.get(f"/api/v1/lab/files/{lab_file.id}/content")
+    assert resp.status_code == 200
+    assert resp.data["preview_kind"] == "pdf"
+    assert "download_url" in resp.data
+    assert "%PDF" not in (resp.data.get("content") or "")

@@ -4,12 +4,14 @@ from apps.indexer.storage import (
     _s3_client,
     delete_file,
     download_file_bytes,
+    generate_presigned_download_url,
     generate_presigned_upload_url,
 )
 
 __all__ = [
     "build_lab_file_key",
     "generate_presigned_upload_url",
+    "generate_presigned_download_url",
     "download_file_bytes",
     "delete_file",
     "upload_text_content",

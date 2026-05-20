@@ -1,15 +1,26 @@
 {
   "navTitle": "Lab",
   "tree": {
-    "title": "Dosyalar",
+    "title": "Gezgin",
     "upload": "Dosya yükle",
     "newFolder": "Yeni klasör",
-    "root": "Tüm klasörler",
-    "focus": "RAG odağına ekle"
+    "root": "Çalışma alanı kökü",
+    "focus": "RAG odağına ekle",
+    "rename": "Yeniden adlandır (çift tık)",
+    "moveTo": "Dosyayı taşı",
+    "pickFolder": "Klasör seç",
+    "cancel": "İptal",
+    "moveSelected": "Seçili dosyayı taşı…"
   },
   "viewer": {
     "empty": "Önizleme için dosya seçin",
-    "notReadable": "Dosya içeriği yüklenemedi"
+    "notReadable": "Dosya içeriği yüklenemedi",
+    "binaryHint": "Bu format için önizleme yok. Storj üzerinden indirin veya harici açın.",
+    "download": "İndir"
+  },
+  "layout": {
+    "hideChat": "Agent panelini gizle",
+    "showChat": "Agent panelini göster"
   },
   "artifacts": {
     "title": "Agent çıktıları",

@@ -1140,6 +1140,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/LabFile'
 
+  /lab/files/{file_id}/stream:
+    get:
+      tags: [Lab]
+      operationId: streamLabFile
+      parameters:
+        - name: file_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Raw file bytes for inline preview
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
   /workspaces/{workspace_id}/lab/sessions:
     get:
       tags: [Lab]
@@ -2410,12 +2430,20 @@ components:
     LabFileContent:
       type: object
       properties:
+        preview_kind:
+          type: string
+          enum: [text, pdf, image, binary]
         content:
           type: string
         name:
           type: string
         mime_type:
           type: string
+        download_url:
+          type: string
+          format: uri
+        expires_in:
+          type: integer
 
     LabFileContentUpdate:
       type: object

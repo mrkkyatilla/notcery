@@ -34,7 +34,37 @@ EXTENSION_MIME = {
     ".php": "text/plain",
     ".swift": "text/plain",
     ".kt": "text/plain",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
 }
+
+TEXT_PREVIEW_EXTENSIONS = {
+    ext
+    for ext, mime in EXTENSION_MIME.items()
+    if mime.startswith("text/") or mime in ("application/json", "image/svg+xml")
+}
+
+
+def is_text_previewable(filename: str, mime_type: str) -> bool:
+    ext = os.path.splitext(filename)[1].lower()
+    if ext in TEXT_PREVIEW_EXTENSIONS:
+        return True
+    effective = guess_mime_from_name(filename, mime_type)
+    return effective.startswith("text/") or effective == "application/json"
+
+
+def is_image_previewable(filename: str, mime_type: str) -> bool:
+    effective = guess_mime_from_name(filename, mime_type)
+    return effective.startswith("image/") and effective != "image/svg+xml"
+
+
+def is_pdf_previewable(filename: str, mime_type: str) -> bool:
+    ext = os.path.splitext(filename)[1].lower()
+    return ext == ".pdf" or guess_mime_from_name(filename, mime_type) == "application/pdf"
 
 
 def guess_mime_from_name(filename: str, declared_mime: str) -> str:
